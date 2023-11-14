@@ -1,5 +1,5 @@
 import {initializeApp} from 'firebase/app'
-import {getFirestore} from 'firebase/firestore'
+import {getFirestore, collection, doc, onSnapshot, query, orderBy, where} from 'firebase/firestore'
 
 const firebaseConfig = {
    apiKey: process.env.EXPO_PUBLIC_API_KEY,
@@ -14,7 +14,15 @@ const firebaseConfig = {
  initializeApp(firebaseConfig);
 
  const firestore = getFirestore();
+ const USERS = "users";
 
  export{
-    firestore
+    firestore,
+    USERS,
+    collection,
+    doc,
+    onSnapshot,
+    query,
+    orderBy,
+    where
  }
