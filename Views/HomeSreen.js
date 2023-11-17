@@ -1,8 +1,9 @@
 import React from "react";
 import { useLayoutEffect, useState, useEffect } from "react";
-import {firestore, collection, query, onSnapshot, doc, USERS, where} from "../Firebase/Config"
+import {firestore, collection, query, onSnapshot, doc, USERS, where, serverTimestamp} from "../Firebase/Config"
 import { QuerySnapshot } from "firebase/firestore";
 import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import { convertFirebaseTimeStampToJS } from "../Helpers/Timestamp";
 
 export default function HomeScreen({navigation}){
     useLayoutEffect(()=>{
@@ -17,7 +18,7 @@ export default function HomeScreen({navigation}){
 const [sent, setSent]= useState([])
 
 useEffect(()=>{
-const q = query(collection(firestore, USERS))
+const q = query(collection(firestore, USERS, "testuser", "ilmoitukset"))
 
 const unsubscribe = onSnapshot(q,(querySnapshot)=>{
     const tempSent = []
@@ -25,8 +26,9 @@ const unsubscribe = onSnapshot(q,(querySnapshot)=>{
     querySnapshot.forEach((doc)=>{
         const sentObject={
             id: doc.id,
-            title: doc.data().Otsikko,
-            state: doc.data().Tila
+            title: doc.data().otsikko,
+            state: doc.data().tila,
+            created: convertFirebaseTimeStampToJS(doc.data().lähetetty)
 
         }
         tempSent.push(sentObject)
@@ -46,8 +48,10 @@ return(
             {
                 sent.map((report)=>(
                     <View key={report.id}>
-                        <Text>{report.title}</Text>
+                        
+                        <Text>{report.title} {report.created}</Text>
                         <Text>{report.state}</Text>
+                        
                     </View>
                 ))
             }
