@@ -8,12 +8,16 @@ import HomeScreen from './Views/HomeSreen';
 import Lomake from './Views/Lomake';
 import Account from './Views/Account';
 import Contact from './Views/ContactInfo';
+import LoginScreen from './Views/LoginScreen';
+import RegisterScreen from './Views/RegisterScreen';
 
 export default function App() {
 
   const Tab = createBottomTabNavigator();
 
-  return (
+  return <RegisterScreen />
+
+/*   return (
     <NavigationContainer>
       <Tab.Navigator initialRouteName='Home'
       screenOptions={{
@@ -61,7 +65,7 @@ export default function App() {
         }}></Tab.Screen>
       </Tab.Navigator>
     </NavigationContainer>
-  );
+  ); */
 }
 
 const styles = StyleSheet.create({
