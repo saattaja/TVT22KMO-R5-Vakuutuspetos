@@ -1,4 +1,6 @@
 import {initializeApp} from 'firebase/app'
+import { ReactNativeAsyncStorage } from '@react-native-async-storage/async-storage'
+import {getAuth, initializeAuth, getReactNativePersistence} from 'firebase/auth'
 import {getFirestore, collection, doc, onSnapshot, query, orderBy, where, serverTimestamp} from 'firebase/firestore'
 
 const firebaseConfig = {
@@ -11,10 +13,13 @@ const firebaseConfig = {
   };
   
   // Initialize Firebase
- initializeApp(firebaseConfig);
+ const app = initializeApp(firebaseConfig);
 
  const firestore = getFirestore();
  const USERS = "users";
+ const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+ })
 
  export{
     firestore,
@@ -25,5 +30,6 @@ const firebaseConfig = {
     query,
     orderBy,
     where,
-    serverTimestamp
+    serverTimestamp,
+    auth
  }
