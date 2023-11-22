@@ -2,8 +2,9 @@ import React from "react";
 import { useLayoutEffect, useState, useEffect } from "react";
 import {firestore, collection, query, onSnapshot, doc, USERS, where, serverTimestamp} from "../Firebase/Config"
 import { QuerySnapshot } from "firebase/firestore";
-import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import { SafeAreaView, ScrollView, Text, View,StyleSheet } from "react-native";
 import { convertFirebaseTimeStampToJS } from "../Helpers/Timestamp";
+import Screen from "../components/Screen";
 
 export default function HomeScreen({navigation}){
     useLayoutEffect(()=>{
@@ -18,7 +19,7 @@ export default function HomeScreen({navigation}){
 const [sent, setSent]= useState([])
 
 useEffect(()=>{
-const q = query(collection(firestore, USERS, "testuser", "ilmoitukset"))
+const q = query(collection(firestore, USERS, 'QTiTthHdbnTiVUx1XPvJSKcfRbo1', "ilmoitukset"))
 
 const unsubscribe = onSnapshot(q,(querySnapshot)=>{
     const tempSent = []
@@ -26,10 +27,9 @@ const unsubscribe = onSnapshot(q,(querySnapshot)=>{
     querySnapshot.forEach((doc)=>{
         const sentObject={
             id: doc.id,
-            title: doc.data().otsikko,
-            state: doc.data().tila,
-            created: convertFirebaseTimeStampToJS(doc.data().lähetetty)
-
+            title: doc.data().type,
+            created: convertFirebaseTimeStampToJS(doc.data().created),
+            state: doc.data().tila
         }
         tempSent.push(sentObject)
     })
@@ -42,20 +42,43 @@ return()=>{
 }, [])
 
 return(
-    <SafeAreaView>
+    <Screen>
         <ScrollView>
             <Text>Alla näet lähettämäsi vahinkoilmoitukset sekä niiden tilat. Klikkaamalla näet lisätietoja.</Text>
             {
                 sent.map((report)=>(
-                    <View key={report.id}>
+                    <View key={report.id} style={styles.clickable}>
                         
-                        <Text>{report.title} {report.created}</Text>
+                        <Text style={styles.title}>{report.title} {report.created}</Text>
                         <Text>{report.state}</Text>
                         
                     </View>
                 ))
             }
         </ScrollView>
-    </SafeAreaView>
+    </Screen>
 )
 }
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent: 'center',
+      
+    },
+    clickable:{
+        backgroundColor: 'white',
+        padding: 10,
+        marginTop: 10,
+        marginBottom: 10,
+        borderRadius: 10,
+        marginLeft: 10,
+        marginRight: 10,
+        justifyContent: "center"
+
+    },
+    title: {
+        textDecorationColor: 'salmon'
+    }
+  });

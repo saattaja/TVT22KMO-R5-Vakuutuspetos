@@ -1,8 +1,10 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { StyleSheet, Image, View } from "react-native";
 import * as Yup from "yup";
-
+import { auth } from "../Firebase/Config";
+import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { AppForm, AppFormField, SubmitButton } from "../components/forms";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //Käytetää yup kirjastoa määrittelemään ehtoja inputeille
 const validationSchema = Yup.object().shape({
@@ -11,13 +13,60 @@ const validationSchema = Yup.object().shape({
   });
 
   function LoginScreen(props) {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [authenticated, setAuthenticated] = useState(false);
+  
+    const storeUserData = async (value) => {
+      try {
+        const jsonValue = JSON.stringify(value);
+        await AsyncStorage.setItem('user', jsonValue);
+      }
+      catch (e){
+        console.log("Error in signin:" + e)
+      }
+    }
+    useEffect(() => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        AsyncStorage.removeItem('user');
+        setAuthenticated(false);
+      });
+      return () => unsubscribe();
+    }, [auth]);
+  
+    function handleSubmit(email, password){
+      //event.preventDefault();
+      console.log(email);
+      console.log(password);
+      console.log(auth);
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+  
+          const user = userCredential.user;
+          console.log(auth);
+          console.log("login succeeded");
+          console.log(user);
+          storeUserData(user);
+  
+          setAuthenticated(true);
+          //console.log(user);
+        })
+        .catch((error) => {
+          console.log("Login FAIL on user");
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorMessage, errorCode)
+        });
+    }
+  
+
     return (
       <View style={styles.container}>
         <Image style={styles.logo} source={require("../assets/user-login-305.png")} />
   
         <AppForm
           initialValues={{ email: "", password: "" }}
-          onSubmit={(values) => console.log(values)}
+          onSubmit={handleSubmit}
           validationSchema={validationSchema}
         >
           <AppFormField

@@ -35,6 +35,11 @@ export default function Lomake({navigation}){
         })
     }, [])
 
+
+    const addReport = async(reportinfo)=>{
+      console.log(reportinfo)
+    }
+
     return (
 
         <Screen style={styles.container}>
@@ -46,7 +51,7 @@ export default function Lomake({navigation}){
               description: "",
               category: null,
             }}
-            onSubmit={(values) => console.log(values)}
+            onSubmit={addReport(values)}
             validationSchema={validationSchema}
           >
             <FormField maxLength={255} name="title" placeholder="Otsikko" />
@@ -56,6 +61,7 @@ export default function Lomake({navigation}){
               maxLength={8}
               name="price"
               placeholder="Vahingon arvo"
+              
             />
             <FormField
               maxLength={255}

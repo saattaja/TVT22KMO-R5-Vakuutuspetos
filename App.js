@@ -21,7 +21,7 @@ export default function App() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [authenticated, setAuthenticated] = useState(false);
+  const [authenticated, setAuthenticated] = useState(true);
 
   const storeUserData = async (value) => {
     try {
@@ -66,10 +66,8 @@ export default function App() {
   }
 
 
-
-
   //return <RegisterScreen />
-  if(authenticated){
+  if(!authenticated){
    return (
     <NavigationContainer>
       <Tab.Navigator initialRouteName='Home'
@@ -122,7 +120,7 @@ export default function App() {
 }
 else{
   return(
-    <View style={styles.container}>
+    /*<View style={styles.container}>
       <TextInput
         type="email"
         value={email}
@@ -136,7 +134,8 @@ else{
         onChangeText={(text) => setPassword(text)}
       />
       <Button title="Submit" onPress={(e) => handleSubmit(e, email, password)} />
-  </View>
+  </View>*/
+  <LoginScreen></LoginScreen>
   );
 }
 }
