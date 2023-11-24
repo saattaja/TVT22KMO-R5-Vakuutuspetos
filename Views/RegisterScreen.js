@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useState}  from 'react';
 import {StyleSheet, Image, Text, Pressable} from 'react-native';
 import * as Yup from 'yup';
-
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import Screen from '../components/Screen';
 import {AppForm, SubmitButton, AppFormField} from '../components/forms';
 
@@ -12,15 +12,33 @@ const validationSchema = Yup.object().shape( {
   password: Yup.string().required().min(4).label("Salasana"),
 } )
 
-
 function RegisterScreen(props) {
+  const [userCreated, setUserCreated] = useState(false);
 
+  function handleSubmit(values){
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, values.email, values.password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user);
+        if (user){
+          setUserCreated(true);
+        }
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+  }
+  
     return (
+      
         <Screen style={styles.container}>
             <Image style={styles.logo} source={require("../assets/add-user-302.png")} />
+            {!userCreated ? (
             <AppForm
             initialValues={{name: '', email: '', password: ''}}
-            onSubmit={values => console.log(values)}
+            onSubmit={handleSubmit}
             validationSchema={validationSchema}
             >
           <AppFormField
@@ -49,6 +67,10 @@ function RegisterScreen(props) {
         />    
             <SubmitButton title="Rekisteröidy"/>
             </AppForm>
+            ) : (
+              <Text>Käyttäjä luotu!</Text>
+              )
+          }
             <Text style={styles.rText}>Onko sinulla jo käyttäjä?</Text>
             <Pressable 
                 title="Kirjaudu" style={styles.rButton}  
@@ -63,7 +85,7 @@ function RegisterScreen(props) {
 const styles = StyleSheet.create({
     container: {
         padding: 10,
-        paddingTop: 80
+        paddingTop: 40
     },
     logo: {
         width: 80,

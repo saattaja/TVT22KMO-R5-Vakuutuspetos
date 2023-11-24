@@ -6,7 +6,6 @@ import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { AppForm, AppFormField, SubmitButton } from "../components/forms";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AuthContext from "../Helpers/AuthContext";
-import RegisterScreen from "./RegisterScreen";
 
 //Käytetää yup kirjastoa määrittelemään ehtoja inputeille
 const validationSchema = Yup.object().shape({
