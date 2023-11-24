@@ -25,8 +25,7 @@ function RegisterScreen(props) {
         console.log(user);
         if (user) {
           const userDocRef = doc(firestore, 'users', user.uid);
-  
-          // Add user data to the document
+
           await setDoc(userDocRef, {
             name: values.name,
             email: values.email,
