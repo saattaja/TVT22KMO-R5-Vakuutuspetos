@@ -1,10 +1,11 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import { StyleSheet, Image, View } from "react-native";
 import * as Yup from "yup";
 import { auth } from "../Firebase/Config";
 import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { AppForm, AppFormField, SubmitButton } from "../components/forms";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import AuthContext from "../Helpers/AuthContext";
 
 //Käytetää yup kirjastoa määrittelemään ehtoja inputeille
 const validationSchema = Yup.object().shape({
@@ -13,6 +14,7 @@ const validationSchema = Yup.object().shape({
   });
 
   function LoginScreen(props) {
+    const {signIn} = useContext(AuthContext);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [authenticated, setAuthenticated] = useState(false);
@@ -46,7 +48,8 @@ const validationSchema = Yup.object().shape({
           console.log("login succeeded");
           console.log("käyttelijä", user);
           storeUserData(user);
-          setAuthenticated(true);
+          signIn();
+          //setAuthenticated(true);
           //console.log(user);
         })
         .catch((error) => {

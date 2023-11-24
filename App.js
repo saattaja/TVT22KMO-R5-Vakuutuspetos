@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useMemo} from 'react'
 import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 import { firestore } from 'firebase/firestore';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -14,61 +14,24 @@ import RegisterScreen from './Views/RegisterScreen';
 import { auth } from './Firebase/Config';
 import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import AuthContext from './Helpers/AuthContext';
 
 export default function App() {
 
   const Tab = createBottomTabNavigator();
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
 
-  const storeUserData = async (value) => {
-    try {
-      const jsonValue = JSON.stringify(value);
-      await AsyncStorage.setItem('user', jsonValue);
-    }
-    catch (e){
-      console.log("Error in signin:" + e)
-    }
-  }
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      AsyncStorage.removeItem('user');
-      setAuthenticated(false);
-    });
-    return () => unsubscribe();
-  }, [auth]);
-
-  function handleSubmit(event, email, password){
-    event.preventDefault();
-    console.log(email);
-    console.log(password);
-    console.log(auth);
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-
-        const user = userCredential.user;
-        console.log(auth);
-        console.log("login succeeded");
-        console.log(user);
-        storeUserData(user);
-
-        setAuthenticated(true);
-        //console.log(user);
-      })
-      .catch((error) => {
-        console.log("Login FAIL on user");
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorMessage, errorCode)
-      });
-  }
-
+  const authContextValue= useMemo(
+    ()=>({
+      signIn: () => setAuthenticated(true),
+    }),
+    []
+  );
 
   //return <RegisterScreen />
-  if(authenticated){
    return (
+    <AuthContext.Provider value={authContextValue}>
+      {authenticated ? (
     <NavigationContainer>
       <Tab.Navigator initialRouteName='Home'
       screenOptions={{
@@ -115,30 +78,13 @@ export default function App() {
           )
         }}></Tab.Screen>
       </Tab.Navigator>
-    </NavigationContainer>
+      
+    </NavigationContainer>):(
+      <LoginScreen></LoginScreen>)}
+    </AuthContext.Provider>
   );
 }
-else{
-  return(
-    /*<View style={styles.container}>
-      <TextInput
-        type="email"
-        value={email}
-        placeholder="Email..."
-        onChangeText={(text) => setEmail(text)}
-      />
-      <TextInput
-        type="password"
-        value={password}
-        placeholder="Password..."
-        onChangeText={(text) => setPassword(text)}
-      />
-      <Button title="Submit" onPress={(e) => handleSubmit(e, email, password)} />
-  </View>*/
-  <LoginScreen></LoginScreen>
-  );
-}
-}
+  
 const styles = StyleSheet.create({
   container: {
     flex: 1,
