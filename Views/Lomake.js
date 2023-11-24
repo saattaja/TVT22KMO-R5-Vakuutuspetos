@@ -51,7 +51,7 @@ export default function Lomake({navigation}){
               description: "",
               category: null,
             }}
-            onSubmit={addReport(values)}
+            onSubmit={addReport}
             validationSchema={validationSchema}
           >
             <FormField maxLength={255} name="title" placeholder="Otsikko" />
