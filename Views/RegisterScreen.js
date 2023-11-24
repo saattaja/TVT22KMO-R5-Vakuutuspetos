@@ -4,6 +4,8 @@ import * as Yup from 'yup';
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import Screen from '../components/Screen';
 import {AppForm, SubmitButton, AppFormField} from '../components/forms';
+import { setDoc, doc, collection, addDoc } from 'firebase/firestore';
+import { firestore } from '../Firebase/Config';
 
 //Käytetää yup kirjastoa määrittelemään ehtoja inputeille
 const validationSchema = Yup.object().shape( {
@@ -15,22 +17,35 @@ const validationSchema = Yup.object().shape( {
 function RegisterScreen(props) {
   const [userCreated, setUserCreated] = useState(false);
 
-  function handleSubmit(values){
+  function handleSubmit(values) {
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, values.email, values.password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         const user = userCredential.user;
         console.log(user);
-        if (user){
+        if (user) {
+          const userDocRef = doc(firestore, 'users', user.uid);
+  
+          // Add user data to the document
+          await setDoc(userDocRef, {
+            name: values.name,
+            email: values.email,
+          });
+  
+          async function createEmptyCollection() {
+            const ilmoitukset = collection(firestore, 'ilmoitukset');
+          }
+          createEmptyCollection();
           setUserCreated(true);
         }
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
+        console.error(errorMessage, errorCode);
       });
   }
-  
+
     return (
       
         <Screen style={styles.container}>
