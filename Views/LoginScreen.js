@@ -34,20 +34,18 @@ const validationSchema = Yup.object().shape({
       return () => unsubscribe();
     }, [auth]);
   
-    function handleSubmit(email, password){
+    function handleSubmit(values){
       //event.preventDefault();
-      console.log(email);
-      console.log(password);
-      console.log(auth);
-      signInWithEmailAndPassword(auth, email, password)
+      console.log("sposti",values);
+      console.log("käyttäjä",auth);
+      signInWithEmailAndPassword(auth, values.email, values.password)
         .then((userCredential) => {
   
           const user = userCredential.user;
-          console.log(auth);
+          console.log("autentikointi",auth);
           console.log("login succeeded");
-          console.log(user);
+          console.log("käyttelijä", user);
           storeUserData(user);
-  
           setAuthenticated(true);
           //console.log(user);
         })

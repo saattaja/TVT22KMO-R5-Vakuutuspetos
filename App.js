@@ -21,7 +21,7 @@ export default function App() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [authenticated, setAuthenticated] = useState(true);
+  const [authenticated, setAuthenticated] = useState(false);
 
   const storeUserData = async (value) => {
     try {
@@ -67,7 +67,7 @@ export default function App() {
 
 
   //return <RegisterScreen />
-  if(!authenticated){
+  if(authenticated){
    return (
     <NavigationContainer>
       <Tab.Navigator initialRouteName='Home'

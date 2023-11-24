@@ -5,6 +5,7 @@ import { QuerySnapshot } from "firebase/firestore";
 import { SafeAreaView, ScrollView, Text, View,StyleSheet } from "react-native";
 import { convertFirebaseTimeStampToJS } from "../Helpers/Timestamp";
 import Screen from "../components/Screen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HomeScreen({navigation}){
     useLayoutEffect(()=>{
@@ -17,6 +18,28 @@ export default function HomeScreen({navigation}){
     }, [])
 
 const [sent, setSent]= useState([])
+
+
+//tämä käyttöön kunhan autentikointi on olemassa
+/*
+const [userData, setUserData] = useState(null);
+const [userDataLoaded, setUserDataLoaded] = useState(false);
+useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem('user');
+        if (jsonValue !== null) {
+          const parsedUser = JSON.parse(jsonValue);
+          setUserData(parsedUser);
+          setUserDataLoaded(true); // Mark user data as loaded
+        }
+      } catch (error) {
+        console.log("Error in homescreen AsyncStorage read: " + error);
+      }
+    };
+    fetchData();
+}, []);*/
+
 
 useEffect(()=>{
 const q = query(collection(firestore, USERS, 'QTiTthHdbnTiVUx1XPvJSKcfRbo1', "ilmoitukset"))
