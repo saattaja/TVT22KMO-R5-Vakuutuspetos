@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Image} from 'react-native';
+import {StyleSheet, Image, Text, Pressable} from 'react-native';
 import * as Yup from 'yup';
 
 import Screen from '../components/Screen';
@@ -13,7 +13,7 @@ const validationSchema = Yup.object().shape( {
 } )
 
 
-function RegisterScreen() {
+function RegisterScreen(props) {
 
     return (
         <Screen style={styles.container}>
@@ -29,7 +29,7 @@ function RegisterScreen() {
           name="name"
           placeholder="Nimi"
         />
-               <AppFormField
+          <AppFormField
           autoCapitalize="none"
           autoCorrect={false}
           icon="email"
@@ -49,6 +49,13 @@ function RegisterScreen() {
         />    
             <SubmitButton title="Rekisteröidy"/>
             </AppForm>
+            <Text style={styles.rText}>Onko sinulla jo käyttäjä?</Text>
+            <Pressable 
+                title="Kirjaudu" style={styles.rButton}  
+                onPress={() => props.navigation.navigate('Login')}
+              >
+              <Text style={styles.rButtonText}>Kirjaudu</Text>
+            </Pressable>
         </Screen>
     );
 }
@@ -56,7 +63,7 @@ function RegisterScreen() {
 const styles = StyleSheet.create({
     container: {
         padding: 10,
-        paddingTop: 100
+        paddingTop: 80
     },
     logo: {
         width: 80,
@@ -64,7 +71,23 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginTop: 50,
         marginBottom: 20
-    }
+    },
+    rButton: {
+      backgroundColor: 'gray',
+      borderRadius: 25,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 15,
+      width: '100%',
+      marginVertical: 10
+  }, rButtonText: {
+    color: 'white',
+    fontSize: 18,
+    textTransform: 'uppercase',
+    fontWeight: 'bold'
+  }, rText: {
+    marginTop: 20
+  },
 })
 
 export default RegisterScreen;

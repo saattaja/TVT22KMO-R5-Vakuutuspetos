@@ -1,11 +1,12 @@
 import React, {useState, useEffect, useContext} from "react";
-import { StyleSheet, Image, View } from "react-native";
+import { StyleSheet, Image, View, Text, Pressable } from "react-native";
 import * as Yup from "yup";
 import { auth } from "../Firebase/Config";
 import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { AppForm, AppFormField, SubmitButton } from "../components/forms";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AuthContext from "../Helpers/AuthContext";
+import RegisterScreen from "./RegisterScreen";
 
 //Käytetää yup kirjastoa määrittelemään ehtoja inputeille
 const validationSchema = Yup.object().shape({
@@ -15,9 +16,6 @@ const validationSchema = Yup.object().shape({
 
   function LoginScreen(props) {
     const {signIn} = useContext(AuthContext);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [authenticated, setAuthenticated] = useState(false);
   
     const storeUserData = async (value) => {
       try {
@@ -28,23 +26,22 @@ const validationSchema = Yup.object().shape({
         console.log("Error in signin:" + e)
       }
     }
+
     useEffect(() => {
       const unsubscribe = onAuthStateChanged(auth, (user) => {
         AsyncStorage.removeItem('user');
-        setAuthenticated(false);
       });
       return () => unsubscribe();
     }, [auth]);
   
     function handleSubmit(values){
-      //event.preventDefault();
       console.log("sposti",values);
       console.log("käyttäjä",auth);
       signInWithEmailAndPassword(auth, values.email, values.password)
         .then((userCredential) => {
   
           const user = userCredential.user;
-          console.log("autentikointi",auth);
+          console.log("autentikointi", auth);
           console.log("login succeeded");
           console.log("käyttelijä", user);
           storeUserData(user);
@@ -90,6 +87,13 @@ const validationSchema = Yup.object().shape({
           />
           <SubmitButton title="Kirjaudu sisään" />
         </AppForm>
+        <Text style={styles.rText}>Puuttuuko vielä käyttäjä?</Text>
+        <Pressable 
+            title="rekisteröidy" style={styles.rButton}  
+            onPress={() => props.navigation.navigate('Register')}
+          >
+          <Text style={styles.rButtonText}>Rekisteröidy</Text>
+        </Pressable>
       </View>
     );
   }
@@ -105,7 +109,23 @@ const validationSchema = Yup.object().shape({
       alignSelf: "center",
       marginTop: 50,
       marginBottom: 20,
-    },
+    }, 
+    rButton: {
+      backgroundColor: 'gray',
+      borderRadius: 25,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 15,
+      width: '100%',
+      marginVertical: 10
+  }, rButtonText: {
+    color: 'white',
+    fontSize: 18,
+    textTransform: 'uppercase',
+    fontWeight: 'bold'
+  }, rText: {
+    marginTop: 20
+  },
   });
   
   export default LoginScreen;
