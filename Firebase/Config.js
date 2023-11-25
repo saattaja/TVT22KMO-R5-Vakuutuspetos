@@ -1,7 +1,7 @@
 import {initializeApp} from 'firebase/app'
 import { ReactNativeAsyncStorage } from '@react-native-async-storage/async-storage'
 import {getAuth, initializeAuth, getReactNativePersistence} from 'firebase/auth'
-import {getFirestore, collection, doc, onSnapshot, query, orderBy, where, serverTimestamp} from 'firebase/firestore'
+import {getFirestore, collection, doc, onSnapshot, query, orderBy, where, serverTimestamp, getDocs, getDoc} from 'firebase/firestore'
 
 const firebaseConfig = {
    apiKey: process.env.EXPO_PUBLIC_API_KEY,
@@ -31,5 +31,7 @@ const firebaseConfig = {
     orderBy,
     where,
     serverTimestamp,
-    auth
+    auth,
+    getDocs,
+    getDoc
  }

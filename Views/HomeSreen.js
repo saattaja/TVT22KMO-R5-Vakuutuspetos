@@ -1,8 +1,7 @@
 import React from "react";
 import { useLayoutEffect, useState, useEffect } from "react";
-import {firestore, collection, query, onSnapshot, doc, USERS, where, serverTimestamp} from "../Firebase/Config"
-import { QuerySnapshot } from "firebase/firestore";
-import { SafeAreaView, ScrollView, Text, View,StyleSheet } from "react-native";
+import {firestore, collection, query, onSnapshot, doc, USERS, getDoc, getDocs} from "../Firebase/Config"
+import { SafeAreaView, ScrollView, Text, View,StyleSheet, Button } from "react-native";
 import { convertFirebaseTimeStampToJS } from "../Helpers/Timestamp";
 import Screen from "../components/Screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -18,52 +17,50 @@ export default function HomeScreen({navigation}){
     }, [])
 
 const [sent, setSent]= useState([])
-
-
-//tämä käyttöön kunhan autentikointi on olemassa
-/*
 const [userData, setUserData] = useState(null);
 const [userDataLoaded, setUserDataLoaded] = useState(false);
+const [ilmoitusDataLoaded, setIlmoitusDataLoaded] = useState(false);
+
 useEffect(() => {
     const fetchData = async () => {
       try {
         const jsonValue = await AsyncStorage.getItem('user');
-        if (jsonValue !== null) {
           const parsedUser = JSON.parse(jsonValue);
           setUserData(parsedUser);
           setUserDataLoaded(true); // Mark user data as loaded
-        }
       } catch (error) {
         console.log("Error in homescreen AsyncStorage read: " + error);
       }
     };
     fetchData();
-}, []);*/
+}, []);
 
 
 useEffect(()=>{
-const q = query(collection(firestore, USERS, 'QTiTthHdbnTiVUx1XPvJSKcfRbo1', "ilmoitukset"))
+    if (userDataLoaded){
+        const fetchIlmoitukset = async() => {
+const q = query(collection(firestore, USERS, userData.uid, "ilmoitukset"))
 
-const unsubscribe = onSnapshot(q,(querySnapshot)=>{
-    const tempSent = []
+const querySnapshot = await getDocs(q);
+const documents = querySnapshot.docs.map((doc)=> ({
+    id: doc.id,
+    created: convertFirebaseTimeStampToJS(doc.data().created),
+    state: doc.data().tila,
+    title: doc.data().title
+    
+}))
 
-    querySnapshot.forEach((doc)=>{
-        const sentObject={
-            id: doc.id,
-            title: doc.data().typeTitle,
-            created: convertFirebaseTimeStampToJS(doc.data().created),
-            state: doc.data().tila
+setSent(documents)
+setIlmoitusDataLoaded(true)
         }
-        tempSent.push(sentObject)
-    })
-    setSent(tempSent)
-    console.log(sent)
-})
-return()=>{
-    unsubscribe()
-}
-}, [])
+    fetchIlmoitukset();
 
+}}, [userData, userDataLoaded])
+
+
+if(!ilmoitusDataLoaded){
+return <Screen><Text>Loading..</Text></Screen>}
+else{
 return(
     <Screen>
         <ScrollView>
@@ -82,6 +79,9 @@ return(
     </Screen>
 )
 }
+
+}
+
 const styles = StyleSheet.create({
     container: {
       flex: 1,
