@@ -100,7 +100,7 @@ const validationSchema = Yup.object().shape({
   const styles = StyleSheet.create({
     container: {
       padding: 10,
-      paddingTop: 150
+      paddingTop: 40
     },
     logo: {
       width: 80,

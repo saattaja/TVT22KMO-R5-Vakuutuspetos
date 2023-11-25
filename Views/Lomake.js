@@ -9,6 +9,9 @@ import {
   SubmitButton,
 } from "../components/forms";
 import Screen from "../components/Screen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { collection, firestore, query } from "../Firebase/Config";
+import { addDoc, serverTimestamp } from "firebase/firestore";
 
 //Käytetää yup kirjastoa määrittelemään ehtoja inputeille
   const validationSchema = Yup.object().shape({
@@ -37,7 +40,32 @@ export default function Lomake({navigation}){
 
 
     const addReport = async(reportinfo)=>{
-      console.log(reportinfo)
+      try{
+        const load = await AsyncStorage.getItem('user');
+        const userinf = JSON.parse(load)
+        console.log("user", userinf.uid)
+
+        if(userinf){
+          const docRef = collection(firestore, 'users', userinf.uid, 'ilmoitukset')
+          await addDoc(docRef, {
+            created: serverTimestamp(),
+            tila: "Lähetetty",
+            typenumber: reportinfo.category.value,
+            typeTitle: reportinfo.category.label,
+            description: reportinfo.description,
+            damageValue: reportinfo.price,
+            title: reportinfo.title
+            
+          })
+
+
+        }
+              }
+              catch(error){
+                console.log(error)
+              }
+      console.log("lomaketiedot", reportinfo)
+      
     }
 
     return (
@@ -53,6 +81,7 @@ export default function Lomake({navigation}){
             }}
             onSubmit={addReport}
             validationSchema={validationSchema}
+            
           >
             <FormField maxLength={255} name="title" placeholder="Otsikko" />
             <Picker items={categories} name="category" placeholder="Valitse kategoria" />

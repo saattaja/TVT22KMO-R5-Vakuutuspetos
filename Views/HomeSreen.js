@@ -50,7 +50,7 @@ const unsubscribe = onSnapshot(q,(querySnapshot)=>{
     querySnapshot.forEach((doc)=>{
         const sentObject={
             id: doc.id,
-            title: doc.data().type,
+            title: doc.data().typeTitle,
             created: convertFirebaseTimeStampToJS(doc.data().created),
             state: doc.data().tila
         }
