@@ -1,19 +1,41 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import {useState, useEffect, useMemo} from 'react'
+import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 import { firestore } from 'firebase/firestore';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import {AntDesign} from '@expo/vector-icons'
 import HomeScreen from './Views/HomeSreen';
 import Lomake from './Views/Lomake';
 import Account from './Views/Account';
 import Contact from './Views/ContactInfo';
+import LoginScreen from './Views/LoginScreen';
+import RegisterScreen from './Views/RegisterScreen';
+import { auth } from './Firebase/Config';
+import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import AuthContext from './Helpers/AuthContext';
+
+
 
 export default function App() {
 
   const Tab = createBottomTabNavigator();
+  const [authenticated, setAuthenticated] = useState(false);
 
-  return (
+  const Stack = createStackNavigator();
+  const authContextValue= useMemo(
+    ()=>({
+      signIn: () => setAuthenticated(true),
+    }),
+    []
+  );
+
+  //return <RegisterScreen />
+   return (
+    <AuthContext.Provider value={authContextValue}>
+      {authenticated ? (
     <NavigationContainer>
       <Tab.Navigator initialRouteName='Home'
       screenOptions={{
@@ -60,10 +82,19 @@ export default function App() {
           )
         }}></Tab.Screen>
       </Tab.Navigator>
-    </NavigationContainer>
+      
+    </NavigationContainer>):(
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Login">
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Register" component={RegisterScreen} />
+          </Stack.Navigator>
+      </NavigationContainer>
+      )}
+    </AuthContext.Provider>
   );
 }
-
+  
 const styles = StyleSheet.create({
   container: {
     flex: 1,
