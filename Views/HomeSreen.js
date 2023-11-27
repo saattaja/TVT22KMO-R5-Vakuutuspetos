@@ -50,8 +50,9 @@ const documents = querySnapshot.docs.map((doc)=> ({
     created: convertFirebaseTimeStampToJS(doc.data().created),
     state: doc.data().tila,
     title: doc.data().title,
-    description: doc.data().description
-    
+    description: doc.data().description,
+    price: doc.data().damageValue,
+    type: doc.data().typenumber
 }))
 
 setSent(documents)
@@ -83,7 +84,7 @@ return(
         backgroundColor="gray"
         />
     }
-    onPress={() => console.log("Message selected", item)}
+    onPress={() => navigation.navigate("listingdetails", item)}
     />
     }
     ItemSeparatorComponent={ListItemSeparator}
