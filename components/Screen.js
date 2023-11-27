@@ -15,7 +15,8 @@ function Screen({children, style}) {
 const styles = StyleSheet.create({
     screen: {
       flex: 1,
-      padding: 10
+      padding: 10,
+      paddingBottom: 105 //ettei peitä bottom tabseja
     },
   });
   
