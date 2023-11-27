@@ -1,5 +1,5 @@
 import React, {useLayoutEffect} from "react";
-import { StyleSheet, use } from "react-native";
+import { StyleSheet } from "react-native";
 import {
     AppForm as Form,
     AppFormField as FormField,
@@ -57,7 +57,7 @@ export default function Contact({navigation}){
             }
                   }
                   catch(error){
-                    console.log(error)
+                    console.log("errori tapahtui:", error)
                   }
           console.log("viesti lähetetty:", message)
     }
