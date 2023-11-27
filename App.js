@@ -16,6 +16,7 @@ import { auth } from './Firebase/Config';
 import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import AuthContext from './Helpers/AuthContext';
+import FeedNavigator from './navigation/FeedNavigation';
 
 
 
@@ -42,15 +43,10 @@ export default function App() {
         tabBarActiveTintColor: 'palevioletred',
       }}>
         <Tab.Screen
-        name="home"
-        component={HomeScreen}
-        options={{
-          title: 'Home',
-          headerTitle: 'Home',
-          tabBarIcon: ({color,size})=>(
-            <AntDesign name="home" size={size} color="steelblue"></AntDesign>
-          )
-        }}></Tab.Screen>
+        name="feed"
+        component={FeedNavigator}
+        options={{headerShown: false}}
+      ></Tab.Screen>
         <Tab.Screen
         name="lomake"
         component={Lomake}

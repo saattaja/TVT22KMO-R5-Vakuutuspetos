@@ -1,10 +1,13 @@
 import React from "react";
 import { useLayoutEffect, useState, useEffect } from "react";
-import {firestore, collection, query, onSnapshot, doc, USERS, getDoc, getDocs} from "../Firebase/Config"
-import { SafeAreaView, ScrollView, Text, View,StyleSheet, Button } from "react-native";
+import {firestore, collection, query, onSnapshot, doc, USERS, getDoc, getDocs, orderBy} from "../Firebase/Config"
+import { SafeAreaView, ScrollView, Text, View,StyleSheet, Button, FlatList} from "react-native";
 import { convertFirebaseTimeStampToJS } from "../Helpers/Timestamp";
 import Screen from "../components/Screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ListItem from "../components/ListItem";
+import Icon from "../components/Icon";
+import ListItemSeparator from "../components/ListItemSeparator";
 
 export default function HomeScreen({navigation}){
     useLayoutEffect(()=>{
@@ -38,24 +41,30 @@ useEffect(() => {
 
 useEffect(()=>{
     if (userDataLoaded){
-        const fetchIlmoitukset = async() => {
-const q = query(collection(firestore, USERS, userData.uid, "ilmoitukset"))
+        const q = query(collection(firestore, USERS, userData.uid, "ilmoitukset"), orderBy('created', 'desc'))
+        const unsubscribe = onSnapshot(q,(querySnapshot)=>{
+            const tempSent = []
 
-const querySnapshot = await getDocs(q);
-const documents = querySnapshot.docs.map((doc)=> ({
-    id: doc.id,
-    created: convertFirebaseTimeStampToJS(doc.data().created),
-    state: doc.data().tila,
-    title: doc.data().title
-    
-}))
-
-setSent(documents)
-setIlmoitusDataLoaded(true)
+            querySnapshot.forEach((doc)=>{
+                const sentObject={
+                    id: doc.id,
+                    created: convertFirebaseTimeStampToJS(doc.data().created),
+                    state: doc.data().tila,
+                    title: doc.data().title,
+                    price: doc.data().damageValue,
+                    description: doc.data().description
+                }
+                tempSent.push(sentObject)
+            })
+                setSent(tempSent)
+               setIlmoitusDataLoaded(true)
+            })
+            return () =>{
+                unsubscribe()
+            }
         }
-    fetchIlmoitukset();
 
-}}, [userData, userDataLoaded])
+}, [userData, userDataLoaded])
 
 
 if(!ilmoitusDataLoaded){
@@ -63,24 +72,49 @@ return <Screen><Text>Loading..</Text></Screen>}
 else{
 return(
     <Screen>
-        <ScrollView>
-            <Text>Alla näet lähettämäsi vahinkoilmoitukset sekä niiden tilat. Klikkaamalla näet lisätietoja.</Text>
-            {
-                sent.map((report)=>(
-                    <View key={report.id} style={styles.clickable}>
-                        
-                        <Text style={styles.title}>{report.title} {report.created}</Text>
-                        <Text>{report.state}</Text>
-                        
-                    </View>
-                ))
-            }
-        </ScrollView>
+    <Text style={styles.text}>Alla näet lähettämäsi vahinkoilmoitukset sekä niiden tilat. Klikkaamalla näet lisätietoja.</Text>
+    <FlatList 
+    data={sent}
+    keyExtractor={message => message.id.toString()}
+    renderItem={({item}) => 
+    <ListItem
+    title={item.title}
+    subTitle={item.description}
+    sended={item.created}
+    state={item.state}
+    IconComponent={
+        <Icon 
+        name= "email"
+        backgroundColor="gray"
+        />
+    }
+    onPress={() => navigation.navigate("listingdetails", item)}
+    />
+    }
+    ItemSeparatorComponent={ListItemSeparator}
+    />
     </Screen>
 )
 }
 
 }
+
+
+{/* <Screen>
+<ScrollView>
+    <Text>Alla näet lähettämäsi vahinkoilmoitukset sekä niiden tilat. Klikkaamalla näet lisätietoja.</Text>
+    {
+        sent.map((report)=>(
+            <View key={report.id} style={styles.clickable}>
+                
+                <Text style={styles.title}>{report.title} {report.created}</Text>
+                <Text>{report.state}</Text>
+                
+            </View>
+        ))
+    }
+</ScrollView>
+</Screen>  */}
 
 const styles = StyleSheet.create({
     container: {
@@ -103,5 +137,10 @@ const styles = StyleSheet.create({
     },
     title: {
         textDecorationColor: 'salmon'
+    },
+    text: {
+        margin: 20,
+        fontSize: 15,
+        textAlign: 'center'
     }
   });
