@@ -38,24 +38,28 @@ useEffect(() => {
 
 useEffect(()=>{
     if (userDataLoaded){
-        const fetchIlmoitukset = async() => {
-const q = query(collection(firestore, USERS, userData.uid, "ilmoitukset"))
+        const q = query(collection(firestore, USERS, userData.uid, "ilmoitukset"))
+        const unsubscribe = onSnapshot(q,(querySnapshot)=>{
+            const tempSent = []
 
-const querySnapshot = await getDocs(q);
-const documents = querySnapshot.docs.map((doc)=> ({
-    id: doc.id,
-    created: convertFirebaseTimeStampToJS(doc.data().created),
-    state: doc.data().tila,
-    title: doc.data().title
-    
-}))
-
-setSent(documents)
-setIlmoitusDataLoaded(true)
+            querySnapshot.forEach((doc)=>{
+                const sentObject={
+                    id: doc.id,
+                    created: convertFirebaseTimeStampToJS(doc.data().created),
+                    state: doc.data().tila,
+                    title: doc.data().title
+                }
+                tempSent.push(sentObject)
+            })
+                setSent(tempSent)
+               setIlmoitusDataLoaded(true)
+            })
+            return () =>{
+                unsubscribe()
+            }
         }
-    fetchIlmoitukset();
 
-}}, [userData, userDataLoaded])
+}, [userData, userDataLoaded])
 
 
 if(!ilmoitusDataLoaded){
