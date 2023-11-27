@@ -1,10 +1,13 @@
 import React from "react";
 import { useLayoutEffect, useState, useEffect } from "react";
 import {firestore, collection, query, onSnapshot, doc, USERS, getDoc, getDocs, orderBy} from "../Firebase/Config"
-import { SafeAreaView, ScrollView, Text, View,StyleSheet, Button } from "react-native";
+import { SafeAreaView, ScrollView, Text, View,StyleSheet, Button, FlatList} from "react-native";
 import { convertFirebaseTimeStampToJS } from "../Helpers/Timestamp";
 import Screen from "../components/Screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ListItem from "../components/ListItem";
+import Icon from "../components/Icon";
+import ListItemSeparator from "../components/ListItemSeparator";
 
 export default function HomeScreen({navigation}){
     useLayoutEffect(()=>{
@@ -67,24 +70,49 @@ return <Screen><Text>Loading..</Text></Screen>}
 else{
 return(
     <Screen>
-        <ScrollView>
-            <Text>Alla näet lähettämäsi vahinkoilmoitukset sekä niiden tilat. Klikkaamalla näet lisätietoja.</Text>
-            {
-                sent.map((report)=>(
-                    <View key={report.id} style={styles.clickable}>
-                        
-                        <Text style={styles.title}>{report.title} {report.created}</Text>
-                        <Text>{report.state}</Text>
-                        
-                    </View>
-                ))
-            }
-        </ScrollView>
+    <Text style={styles.text}>Alla näet lähettämäsi vahinkoilmoitukset sekä niiden tilat. Klikkaamalla näet lisätietoja.</Text>
+    <FlatList 
+    data={sent}
+    keyExtractor={message => message.id.toString()}
+    renderItem={({item}) => 
+    <ListItem
+    title={item.title}
+    subTitle={item.description}
+    sended={item.created}
+    state={item.state}
+    IconComponent={
+        <Icon 
+        name= "email"
+        backgroundColor="gray"
+        />
+    }
+    onPress={() => console.log("Message selected", item)}
+    />
+    }
+    ItemSeparatorComponent={ListItemSeparator}
+    />
     </Screen>
 )
 }
 
 }
+
+
+{/* <Screen>
+<ScrollView>
+    <Text>Alla näet lähettämäsi vahinkoilmoitukset sekä niiden tilat. Klikkaamalla näet lisätietoja.</Text>
+    {
+        sent.map((report)=>(
+            <View key={report.id} style={styles.clickable}>
+                
+                <Text style={styles.title}>{report.title} {report.created}</Text>
+                <Text>{report.state}</Text>
+                
+            </View>
+        ))
+    }
+</ScrollView>
+</Screen>  */}
 
 const styles = StyleSheet.create({
     container: {
@@ -107,5 +135,10 @@ const styles = StyleSheet.create({
     },
     title: {
         textDecorationColor: 'salmon'
+    },
+    text: {
+        margin: 20,
+        fontSize: 15,
+        textAlign: 'center'
     }
   });
