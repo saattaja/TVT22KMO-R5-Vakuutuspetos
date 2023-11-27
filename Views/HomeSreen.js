@@ -86,7 +86,7 @@ return(
         backgroundColor="gray"
         />
     }
-    onPress={() => console.log("Message selected", item)}
+    onPress={() => navigation.navigate("listingdetails", item)}
     />
     }
     ItemSeparatorComponent={ListItemSeparator}
