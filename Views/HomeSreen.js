@@ -50,7 +50,9 @@ useEffect(()=>{
                     id: doc.id,
                     created: convertFirebaseTimeStampToJS(doc.data().created),
                     state: doc.data().tila,
-                    title: doc.data().title
+                    title: doc.data().title,
+                    price: doc.data().damageValue,
+                    description: doc.data().description
                 }
                 tempSent.push(sentObject)
             })
