@@ -1,6 +1,6 @@
 import React from "react";
 import { useLayoutEffect, useState, useEffect } from "react";
-import {firestore, collection, query, onSnapshot, doc, USERS, getDoc, getDocs} from "../Firebase/Config"
+import {firestore, collection, query, onSnapshot, doc, USERS, getDoc, getDocs, orderBy} from "../Firebase/Config"
 import { SafeAreaView, ScrollView, Text, View,StyleSheet, Button } from "react-native";
 import { convertFirebaseTimeStampToJS } from "../Helpers/Timestamp";
 import Screen from "../components/Screen";
@@ -38,7 +38,7 @@ useEffect(() => {
 
 useEffect(()=>{
     if (userDataLoaded){
-        const q = query(collection(firestore, USERS, userData.uid, "ilmoitukset"))
+        const q = query(collection(firestore, USERS, userData.uid, "ilmoitukset"), orderBy('created', 'desc'))
         const unsubscribe = onSnapshot(q,(querySnapshot)=>{
             const tempSent = []
 
