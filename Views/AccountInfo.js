@@ -1,7 +1,7 @@
 import React from "react";
 import { useLayoutEffect } from "react";
 import Screen from "../components/Screen";
-import { FlatList, View } from "react-native";
+import { FlatList, View, Text } from "react-native";
 
 
 function AccountInfo({navigation}){

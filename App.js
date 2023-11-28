@@ -17,6 +17,7 @@ import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import AuthContext from './Helpers/AuthContext';
 import FeedNavigator from './navigation/FeedNavigation';
+import AccInfoNavigation from './navigation/AccInfoNavigation';
 
 
 
@@ -59,10 +60,11 @@ export default function App() {
         }}></Tab.Screen>
         <Tab.Screen
         name="account"
-        component={Account}
+        component={AccInfoNavigation}
         options={{
           title: 'Käyttäjä',
           headerTitle: 'Käyttäjäasetukset',
+          headerShown: false,
           tabBarIcon: ({color,size})=>(
             <AntDesign name="user" size={size} color="steelblue"></AntDesign>
           )
