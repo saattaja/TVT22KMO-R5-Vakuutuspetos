@@ -1,5 +1,5 @@
-import React, { useLayoutEffect } from "react";
-import { StyleSheet } from "react-native";
+import React, { useLayoutEffect, useState } from "react";
+import { Button, StyleSheet, Image } from "react-native";
 import * as Yup from "yup";
 
 import {
@@ -12,6 +12,7 @@ import Screen from "../components/Screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { collection, firestore, query } from "../Firebase/Config";
 import { addDoc, serverTimestamp } from "firebase/firestore";
+import * as ImagePicker from 'expo-image-picker';
 
 //Käytetää yup kirjastoa määrittelemään ehtoja inputeille
   const validationSchema = Yup.object().shape({
@@ -27,8 +28,22 @@ import { addDoc, serverTimestamp } from "firebase/firestore";
     { label: "Koti ja irtaimisto", value: 2 },
     { label: "Muu omaisuus", value: 3 },
   ];
-
 export default function Lomake({navigation}){
+  const [image, setImage] = useState(null);
+    const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: false,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    console.log(result);
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+    };
     useLayoutEffect(()=>{
         navigation.setOptions({
             headerStyle:{
@@ -92,6 +107,8 @@ export default function Lomake({navigation}){
               placeholder="Vahingon arvo"
               
             />
+            <Button title="Kuva tapahtuneesta" onPress={pickImage} />
+            {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
             <FormField
               maxLength={255}
               multiline
