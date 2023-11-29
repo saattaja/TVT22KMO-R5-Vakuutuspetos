@@ -7,6 +7,7 @@ import Icon from "../components/Icon";
 import ListItemSeparator from "../components/ListItemSeparator";
 import { signOut } from "firebase/auth";
 import {auth} from "../Firebase/Config"
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import LoginScreen from "./LoginScreen";
 
 export default function Account({navigation}){
@@ -19,15 +20,18 @@ export default function Account({navigation}){
         })
     }, [])
 
-/*const logOut = ()=>{
-try{signOut(auth)
-console.log("logout")}
-catch(error){
-    console.log(error)
+
+
+function logOut(){
+    signOut(auth)
+    AsyncStorage.removeItem('user')
+    .then(()=>{
+        navigation.navigate("login");
+    })
+    .catch((error)=>{
+        console.log("errori:", error)
+    })
 }
-
- }*/
-
     return(
         <Screen>
         <AccountInfoItem
@@ -71,7 +75,7 @@ catch(error){
             backgroundColor="gray"
             />
         }
-        onPress={""}
+        onPress={logOut}
         />
         </Screen>
     )
