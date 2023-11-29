@@ -5,6 +5,9 @@ import { FlatList } from "react-native";
 import AccountInfoItem from "../components/AccountInfoItem";
 import Icon from "../components/Icon";
 import ListItemSeparator from "../components/ListItemSeparator";
+import { signOut } from "firebase/auth";
+import {auth} from "../Firebase/Config"
+import LoginScreen from "./LoginScreen";
 
 export default function Account({navigation}){
     useLayoutEffect(()=>{
@@ -15,6 +18,15 @@ export default function Account({navigation}){
             
         })
     }, [])
+
+/*const logOut = ()=>{
+try{signOut(auth)
+console.log("logout")}
+catch(error){
+    console.log(error)
+}
+
+ }*/
 
     return(
         <Screen>
@@ -41,6 +53,17 @@ export default function Account({navigation}){
         />
         <ListItemSeparator></ListItemSeparator>
         <AccountInfoItem
+        title="Poista käyttäjätunnus"
+        IconComponent={
+            <Icon 
+            name= "account-remove-outline"
+            backgroundColor="gray"
+            />
+        }
+        onPress={() => navigation.navigate("")}
+        />
+        <ListItemSeparator></ListItemSeparator>
+        <AccountInfoItem
         title="Kirjaudu ulos"
         IconComponent={
             <Icon 
@@ -48,7 +71,7 @@ export default function Account({navigation}){
             backgroundColor="gray"
             />
         }
-        onPress={() => navigation.navigate("")}
+        onPress={""}
         />
         </Screen>
     )
