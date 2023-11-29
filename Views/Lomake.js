@@ -13,6 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { collection, firestore, query } from "../Firebase/Config";
 import { addDoc, serverTimestamp } from "firebase/firestore";
 import * as ImagePicker from 'expo-image-picker';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 //Käytetää yup kirjastoa määrittelemään ehtoja inputeille
   const validationSchema = Yup.object().shape({
@@ -30,18 +31,19 @@ import * as ImagePicker from 'expo-image-picker';
   ];
 export default function Lomake({navigation}){
   const [image, setImage] = useState(null);
+  const [uuid, setUuid] = useState("");
+
     const pickImage = async () => {
     // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
+    let iresult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: false,
       aspect: [4, 3],
-      quality: 1,
+      quality: 0.8,
     });
-    console.log(result);
 
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
+    if (!iresult.canceled) {
+      setImage(iresult.assets[0].uri);
     }
     };
     useLayoutEffect(()=>{
@@ -52,14 +54,38 @@ export default function Lomake({navigation}){
             
         })
     }, [])
-
+    async function uploadImageAsync(uri) {
+      // Why are we using XMLHttpRequest? See:
+      // https://github.com/expo/expo/issues/2402#issuecomment-443726662
+      const blob = await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.onload = function () {
+          resolve(xhr.response);
+        };
+        xhr.onerror = function (e) {
+          console.log(e);
+          reject(new TypeError("Network request failed"));
+        };
+        xhr.responseType = "blob";
+        xhr.open("GET", uri, true);
+        xhr.send(null);
+      });
+    
+      const fileRef = ref(getStorage(), "users/"+uuid+"/"+image.substring(image.lastIndexOf('/') + 1, image.length));
+      const result = await uploadBytes(fileRef, blob);
+    
+      // We're done with the blob, close and release it
+      blob.close();
+    
+      return await getDownloadURL(fileRef);
+    }
 
     const addReport = async(reportinfo)=>{
       try{
         const load = await AsyncStorage.getItem('user');
         const userinf = JSON.parse(load)
         console.log("user", userinf.uid)
-
+        setUuid(userinf.uid)
         if(userinf){
           const docRef = collection(firestore, 'users', userinf.uid, 'ilmoitukset')
           await addDoc(docRef, {
@@ -69,11 +95,12 @@ export default function Lomake({navigation}){
             typeTitle: reportinfo.category.label,
             description: reportinfo.description,
             damageValue: reportinfo.price,
-            title: reportinfo.title
+            title: reportinfo.title,
+            picture: image.substring(image.lastIndexOf('/') + 1, image.length)
             
           })
-
-
+          const uploadUrl = await uploadImageAsync(image);
+          setImage(uploadUrl);
         }
               }
               catch(error){
@@ -93,6 +120,7 @@ export default function Lomake({navigation}){
               price: "",
               description: "",
               category: null,
+              picture: null,
             }}
             onSubmit={addReport}
             validationSchema={validationSchema}
