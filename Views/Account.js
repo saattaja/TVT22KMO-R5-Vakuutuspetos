@@ -1,5 +1,5 @@
 import React from "react";
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useContext } from "react";
 import Screen from "../components/Screen";
 import { FlatList } from "react-native";
 import AccountInfoItem from "../components/AccountInfoItem";
@@ -9,8 +9,12 @@ import { signOut } from "firebase/auth";
 import {auth} from "../Firebase/Config"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LoginScreen from "./LoginScreen";
+import { StackActions } from "@react-navigation/native";
+import AuthContext from "../Helpers/AuthContext";
 
 export default function Account({navigation}){
+    const {signOuts} = useContext(AuthContext);
+
     useLayoutEffect(()=>{
         navigation.setOptions({
             headerStyle:{
@@ -26,7 +30,7 @@ function logOut(){
     signOut(auth)
     AsyncStorage.removeItem('user')
     .then(()=>{
-        navigation.navigate("login");
+        signOuts();
     })
     .catch((error)=>{
         console.log("errori:", error)

@@ -30,6 +30,7 @@ export default function App() {
   const authContextValue= useMemo(
     ()=>({
       signIn: () => setAuthenticated(true),
+      signOuts: ()=> setAuthenticated(false)
     }),
     []
   );
