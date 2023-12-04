@@ -18,7 +18,6 @@ export default function Account({navigation}){
     const {signOuts} = useContext(AuthContext);
     const [isReauthDialogVisible, setReauthDialogVisible] = useState(false);
 
-
     function showReauthDialog() {
         setReauthDialogVisible(true);
     }
@@ -36,7 +35,6 @@ export default function Account({navigation}){
         })
     }, [])
     
-
     function showConfirmDialog() {
         return Alert.alert(
             "Are you sure?",
