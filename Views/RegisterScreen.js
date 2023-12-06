@@ -122,7 +122,11 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     fontWeight: 'bold'
   }, rText: {
-    marginTop: 20
+    marginTop: 20,
+    fontSize: 15,
+    textAlign: 'center',
+    fontFamily: Platform.OS === 'android' ? 'Roboto' : 'Avenir',
+    color: '#0c0c0c'
   },
 })
 
