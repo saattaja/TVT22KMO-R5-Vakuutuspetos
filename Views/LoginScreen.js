@@ -122,9 +122,14 @@ const validationSchema = Yup.object().shape({
     fontSize: 18,
     textTransform: 'uppercase',
     fontWeight: 'bold'
-  }, rText: {
-    marginTop: 20
-  },
+  }, 
+  rText: {
+    marginTop: 20,
+    fontSize: 15,
+    textAlign: 'center',
+    fontFamily: Platform.OS === 'android' ? 'Roboto' : 'Avenir',
+    color: '#0c0c0c'
+}
   });
   
   export default LoginScreen;
