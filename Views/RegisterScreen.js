@@ -1,5 +1,5 @@
 import React, {useState}  from 'react';
-import {StyleSheet, Image, Text, Pressable} from 'react-native';
+import {StyleSheet, Image, Text, Pressable, Alert} from 'react-native';
 import * as Yup from 'yup';
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import Screen from '../components/Screen';
@@ -25,23 +25,25 @@ function RegisterScreen(props) {
         console.log(user);
         if (user) {
           const userDocRef = doc(firestore, 'users', user.uid);
-
+  
           await setDoc(userDocRef, {
             name: values.name,
             email: values.email,
           });
   
-          async function createEmptyCollection() {
-            const ilmoitukset = collection(firestore, 'ilmoitukset');
-          }
-          createEmptyCollection();
+          // Luo tyhjä ilmoituskokoelma
+          const ilmoitukset = collection(firestore, 'ilmoitukset');
+  
+          // Aseta käyttäjä luodut arvot
           setUserCreated(true);
+  
         }
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.error(errorMessage, errorCode);
+        Alert.alert('Virhe rekisteröinnissä', errorMessage);
       });
   }
 
