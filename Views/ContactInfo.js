@@ -1,5 +1,5 @@
-import React, {useLayoutEffect} from "react";
-import { StyleSheet, Alert} from "react-native";
+import React, {useLayoutEffect, useState} from "react";
+import { StyleSheet, Alert, ActivityIndicator} from "react-native";
 import {
     AppForm as Form,
     AppFormField as FormField,
@@ -28,6 +28,8 @@ const categories = [
   });
 
 export default function Contact({navigation}){
+  const [isLoading, setIsLoading] = useState(false);
+
     useLayoutEffect(()=>{
         navigation.setOptions({
             headerStyle:{
@@ -40,6 +42,7 @@ export default function Contact({navigation}){
 
     const sendMessage = async (message, { resetForm } ) => {
       try {
+        setIsLoading(true); // Näytä latausindikaattori'
         const load = await AsyncStorage.getItem('user');
         const userinf = JSON.parse(load);
         console.log("user", userinf.uid);
@@ -68,8 +71,10 @@ export default function Contact({navigation}){
         }
       } catch (error) {
         console.log("errori tapahtui:", error);
+      } finally {
+        setIsLoading(false); // Piilota latausindikaattori
       }
-    
+  
       console.log("viesti lähetetty:", message);
       resetForm();
     };
@@ -96,6 +101,7 @@ export default function Contact({navigation}){
             placeholder="Kirjoita viesti"
           />
           <SubmitButton title="Lähetä viesti" color="#96bf44"/>
+          {isLoading && <ActivityIndicator size="large" color="steelblue" />}
         </Form>
       </Screen>
     )

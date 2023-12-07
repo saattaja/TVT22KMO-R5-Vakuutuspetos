@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState } from "react";
-import { Button, StyleSheet, Image, Alert } from "react-native";
+import { Button, StyleSheet, Image, Alert, ActivityIndicator } from "react-native";
 import * as Yup from "yup";
 
 import {
@@ -32,6 +32,8 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 export default function Lomake({navigation}){
   const [image, setImage] = useState(null);
   const [uuid, setUuid] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
 
     const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -81,6 +83,8 @@ export default function Lomake({navigation}){
     }
     const addReport = async (reportinfo, { resetForm }) => {
       try {
+
+        setIsLoading(true); // Näytä latausindikaattori
         const load = await AsyncStorage.getItem('user');
         const userinf = JSON.parse(load);
     
@@ -119,8 +123,9 @@ export default function Lomake({navigation}){
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsLoading(false); // Piilota latausindikaattori
       }
-    
       console.log("lomaketiedot", reportinfo);
       resetForm();
     };
@@ -159,6 +164,7 @@ export default function Lomake({navigation}){
               placeholder="Kuvaus tapahtuneesta"
             />
             <SubmitButton title="Lähetä" color="#96bf44"/>
+            {isLoading && <ActivityIndicator size="large" color="steelblue" />}
           </Form>
         </Screen>
       );
