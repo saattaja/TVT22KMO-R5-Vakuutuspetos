@@ -38,7 +38,7 @@ export default function Contact({navigation}){
     }, [])
 
 
-    const sendMessage = async (message) => {
+    const sendMessage = async (message, { resetForm } ) => {
       try {
         const load = await AsyncStorage.getItem('user');
         const userinf = JSON.parse(load);
@@ -71,6 +71,7 @@ export default function Contact({navigation}){
       }
     
       console.log("viesti lähetetty:", message);
+      resetForm();
     };
     return(
         <Screen style={styles.container}>

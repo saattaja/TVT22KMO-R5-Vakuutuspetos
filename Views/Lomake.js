@@ -79,7 +79,7 @@ export default function Lomake({navigation}){
     
       return await getDownloadURL(fileRef);
     }
-    const addReport = async (reportinfo) => {
+    const addReport = async (reportinfo, { resetForm }) => {
       try {
         const load = await AsyncStorage.getItem('user');
         const userinf = JSON.parse(load);
@@ -99,7 +99,7 @@ export default function Lomake({navigation}){
             description: reportinfo.description,
             damageValue: reportinfo.price,
             title: reportinfo.title,
-            picture: image.substring(image.lastIndexOf('/') + 1, image.length),
+            picture: image ? image.substring(image.lastIndexOf('/') + 1, image.length) : null,
           });
     
           // Hae lisätyn dokumentin tiedot käyttämällä dokumentin ID:tä
@@ -107,14 +107,14 @@ export default function Lomake({navigation}){
     
           // Tarkista, että dokumentti on lisätty onnistuneesti
           if (addedDocSnapshot.exists()) {
+            if (image) {
+              const uploadUrl = await uploadImageAsync(image);
+              setImage(uploadUrl);
+            }
             Alert.alert('Lähetys onnistui', 'Lomake lähetetty onnistuneesti.');
-    
-            // Suorita tässä muut toimenpiteet, jos lomake on mennyt perille
-    
-            const uploadUrl = await uploadImageAsync(image);
-            setImage(uploadUrl);
+            setImage(null)
           } else {
-            Alert.alert('Virhe','Lomakkeen lähetys epäonnistui');
+            Alert.alert('Virhe', 'Lomakkeen lähetys epäonnistui');
           }
         }
       } catch (error) {
@@ -122,6 +122,7 @@ export default function Lomake({navigation}){
       }
     
       console.log("lomaketiedot", reportinfo);
+      resetForm();
     };
 
     return (
