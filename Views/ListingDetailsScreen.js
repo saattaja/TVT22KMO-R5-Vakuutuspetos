@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Image, View, StyleSheet, Text } from 'react-native';
 import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 
@@ -7,17 +7,19 @@ import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 function ListingDetailsScreen({ route } ) {
 
 const listing = route.params;
-
+const [imageUrl, setImageUrl]= useState();
 const storage = getStorage();
 const userRef = ref(storage, "users");
 const filename = ref(userRef, listing.picture)
-const filePath = filename.fullPath
-const url = getDownloadURL(ref(storage, filePath));
+const filePath = filename.fullPath;
 
-console.log("user",userRef,"filu", filePath,"urk", url)
+getDownloadURL(ref(storage, filePath))
+.then((url)=>{
+    setImageUrl(url)
+})
     return (
         <View>
- <Image style={styles.image} source={url}/>
+ <Image style={styles.image} source={{uri: imageUrl}}/>
  <View style={styles.detailsContainer}>
  <Text style={styles.title}>{listing.title}</Text>
  <Text style={styles.desc}>{listing.description}</Text>
