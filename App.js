@@ -13,7 +13,7 @@ import Contact from './Views/ContactInfo';
 import LoginScreen from './Views/LoginScreen';
 import RegisterScreen from './Views/RegisterScreen';
 import { auth } from './Firebase/Config';
-import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { signInWithEmailAndPassword, onAuthStateChanged, signInWithCustomToken } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import AuthContext from './Helpers/AuthContext';
 import FeedNavigator from './navigation/FeedNavigation';
@@ -45,9 +45,15 @@ export default function App() {
         tabBarActiveTintColor: 'palevioletred',
       }}>
         <Tab.Screen
-        name="feed"
+        name="Home"
         component={FeedNavigator}
-        options={{headerShown: false}}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({color,size})=>(
+            <AntDesign name="home" size={size} color="steelblue"></AntDesign>
+          )
+        }
+      }
       ></Tab.Screen>
         <Tab.Screen
         name="lomake"
@@ -55,8 +61,9 @@ export default function App() {
         options={{
           title: 'Lomake',
           headerTitle: 'Lähetä vahinkoilmoituslomake',
+          headerTitleStyle: { color: 'white' },
           tabBarIcon: ({color,size})=>(
-            <AntDesign name="plus" size={size} color="steelblue"></AntDesign>
+          <AntDesign name="plus" size={size} color="steelblue"></AntDesign>
           )
         }}></Tab.Screen>
         <Tab.Screen
@@ -76,6 +83,7 @@ export default function App() {
         options={{
           title: 'Viesti',
           headerTitle: 'Lähetä viesti',
+          headerTitleStyle: { color: 'white' },
           tabBarIcon: ({color,size})=>(
             <AntDesign name="mail" size={size} color="steelblue"></AntDesign>
           )

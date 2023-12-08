@@ -142,6 +142,8 @@ const styles = StyleSheet.create({
     text: {
         margin: 20,
         fontSize: 15,
-        textAlign: 'center'
+        textAlign: 'center',
+        fontFamily: Platform.OS === 'android' ? 'Roboto' : 'Avenir',
+        color: '#0c0c0c'
     }
   });

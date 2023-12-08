@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState } from "react";
-import { Button, StyleSheet, Image } from "react-native";
+import { Button, StyleSheet, Image, Alert, ActivityIndicator } from "react-native";
 import * as Yup from "yup";
 
 import {
@@ -11,7 +11,7 @@ import {
 import Screen from "../components/Screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { collection, firestore, query } from "../Firebase/Config";
-import { addDoc, serverTimestamp } from "firebase/firestore";
+import { addDoc, serverTimestamp, getDoc } from "firebase/firestore";
 import * as ImagePicker from 'expo-image-picker';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -32,6 +32,8 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 export default function Lomake({navigation}){
   const [image, setImage] = useState(null);
   const [uuid, setUuid] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
 
     const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -79,16 +81,21 @@ export default function Lomake({navigation}){
     
       return await getDownloadURL(fileRef);
     }
+    const addReport = async (reportinfo, { resetForm }) => {
+      try {
 
-    const addReport = async(reportinfo)=>{
-      try{
+        setIsLoading(true); // Näytä latausindikaattori
         const load = await AsyncStorage.getItem('user');
-        const userinf = JSON.parse(load)
-        console.log("user", userinf.uid)
-        setUuid(userinf.uid)
-        if(userinf){
-          const docRef = collection(firestore, 'users', userinf.uid, 'ilmoitukset')
-          await addDoc(docRef, {
+        const userinf = JSON.parse(load);
+    
+        console.log("user", userinf.uid);
+        setUuid(userinf.uid);
+    
+        if (userinf) {
+          const docRef = collection(firestore, 'users', userinf.uid, 'ilmoitukset');
+    
+          // Lisää dokumentti Firestoreen ja hae sen ID
+          const addedDocRef = await addDoc(docRef, {
             created: serverTimestamp(),
             tila: "Lähetetty",
             typenumber: reportinfo.category.value,
@@ -96,19 +103,32 @@ export default function Lomake({navigation}){
             description: reportinfo.description,
             damageValue: reportinfo.price,
             title: reportinfo.title,
-            picture: image.substring(image.lastIndexOf('/') + 1, image.length)
-            
-          })
-          const uploadUrl = await uploadImageAsync(image);
-          setImage(uploadUrl);
+            picture: image ? image.substring(image.lastIndexOf('/') + 1, image.length) : null,
+          });
+    
+          // Hae lisätyn dokumentin tiedot käyttämällä dokumentin ID:tä
+          const addedDocSnapshot = await getDoc(addedDocRef);
+    
+          // Tarkista, että dokumentti on lisätty onnistuneesti
+          if (addedDocSnapshot.exists()) {
+            if (image) {
+              const uploadUrl = await uploadImageAsync(image);
+              setImage(uploadUrl);
+            }
+            Alert.alert('Lähetys onnistui', 'Lomake lähetetty onnistuneesti.');
+            setImage(null)
+          } else {
+            Alert.alert('Virhe', 'Lomakkeen lähetys epäonnistui');
+          }
         }
-              }
-              catch(error){
-                console.log(error)
-              }
-      console.log("lomaketiedot", reportinfo)
-      
-    }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false); // Piilota latausindikaattori
+      }
+      console.log("lomaketiedot", reportinfo);
+      resetForm();
+    };
 
     return (
 
@@ -124,7 +144,6 @@ export default function Lomake({navigation}){
             }}
             onSubmit={addReport}
             validationSchema={validationSchema}
-            
           >
             <FormField maxLength={255} name="title" placeholder="Otsikko" />
             <Picker items={categories} name="category" placeholder="Valitse kategoria" />
@@ -145,6 +164,7 @@ export default function Lomake({navigation}){
               placeholder="Kuvaus tapahtuneesta"
             />
             <SubmitButton title="Lähetä" color="#96bf44"/>
+            {isLoading && <ActivityIndicator size="large" color="steelblue" />}
           </Form>
         </Screen>
       );
