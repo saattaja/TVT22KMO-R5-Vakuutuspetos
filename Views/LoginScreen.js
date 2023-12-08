@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from "react";
-import { StyleSheet, Image, View, Text, Pressable } from "react-native";
+import { StyleSheet, Image, View, Text, Pressable, Alert } from "react-native";
 import * as Yup from "yup";
 import { auth } from "../Firebase/Config";
 import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
@@ -50,6 +50,7 @@ const validationSchema = Yup.object().shape({
         })
         .catch((error) => {
           console.log("Login FAIL on user");
+          Alert.alert('Tarkista käyttäjänimi ja salasana')
           const errorCode = error.code;
           const errorMessage = error.message;
           console.log(errorMessage, errorCode)
@@ -122,9 +123,14 @@ const validationSchema = Yup.object().shape({
     fontSize: 18,
     textTransform: 'uppercase',
     fontWeight: 'bold'
-  }, rText: {
-    marginTop: 20
-  },
+  }, 
+  rText: {
+    marginTop: 20,
+    fontSize: 15,
+    textAlign: 'center',
+    fontFamily: Platform.OS === 'android' ? 'Roboto' : 'Avenir',
+    color: '#0c0c0c'
+}
   });
   
   export default LoginScreen;

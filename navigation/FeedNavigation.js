@@ -7,9 +7,11 @@ const Stack = createStackNavigator();
 
 const FeedNavigator = () => (
     <Stack.Navigator>
-        <Stack.Screen name="home" component={HomeScreen}   options={{
+        <Stack.Screen name="feed" component={HomeScreen}   options={{
           title: 'Home',
-          headerTitle: 'Home'
+          headerTitle: 'Home',
+          headerTitleStyle: { color: 'white' },
+
         }}/>
         <Stack.Screen name="listingdetails" component={ListingDetailsScreen}   options={{
           headerTitle: 'Lähetetty lomake'
