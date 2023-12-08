@@ -1,15 +1,23 @@
 
 import React from 'react';
 import { Image, View, StyleSheet, Text } from 'react-native';
+import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 
 
 function ListingDetailsScreen({ route } ) {
 
 const listing = route.params;
 
+const storage = getStorage();
+const userRef = ref(storage, "users");
+const filename = ref(userRef, listing.picture)
+const filePath = filename.fullPath
+const url = getDownloadURL(ref(storage, filePath));
+
+console.log("user",userRef,"filu", filePath,"urk", url)
     return (
         <View>
- <Image style={styles.image} source={require('../assets/joo.webp')}/>
+ <Image style={styles.image} source={url}/>
  <View style={styles.detailsContainer}>
  <Text style={styles.title}>{listing.title}</Text>
  <Text style={styles.desc}>{listing.description}</Text>

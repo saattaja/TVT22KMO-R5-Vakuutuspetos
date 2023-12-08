@@ -52,7 +52,8 @@ useEffect(()=>{
                     state: doc.data().tila,
                     title: doc.data().title,
                     price: doc.data().damageValue,
-                    description: doc.data().description
+                    description: doc.data().description,
+                    picture: doc.data().picture
                 }
                 tempSent.push(sentObject)
             })
