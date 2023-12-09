@@ -101,22 +101,6 @@ return(
 }
 
 
-{/* <Screen>
-<ScrollView>
-    <Text>Alla näet lähettämäsi vahinkoilmoitukset sekä niiden tilat. Klikkaamalla näet lisätietoja.</Text>
-    {
-        sent.map((report)=>(
-            <View key={report.id} style={styles.clickable}>
-                
-                <Text style={styles.title}>{report.title} {report.created}</Text>
-                <Text>{report.state}</Text>
-                
-            </View>
-        ))
-    }
-</ScrollView>
-</Screen>  */}
-
 const styles = StyleSheet.create({
     container: {
       flex: 1,

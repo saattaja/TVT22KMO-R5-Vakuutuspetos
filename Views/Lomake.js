@@ -1,5 +1,5 @@
-import React, { useLayoutEffect, useState } from "react";
-import { Button, StyleSheet, Image, Alert, ActivityIndicator } from "react-native";
+import React, { useLayoutEffect, useRef, useState } from "react";
+import { Button, StyleSheet, Image, Alert, ActivityIndicator, Pressable, Text } from "react-native";
 import * as Yup from "yup";
 
 import {
@@ -33,6 +33,7 @@ export default function Lomake({navigation}){
   const [image, setImage] = useState(null);
   const [uuid, setUuid] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const formRef = useRef();
 
 
     const pickImage = async () => {
@@ -51,8 +52,17 @@ export default function Lomake({navigation}){
     useLayoutEffect(()=>{
         navigation.setOptions({
             headerStyle:{
-                backgroundColor: 'steelblue'
-            }
+                backgroundColor: 'steelblue',
+            },
+            headerRight: () => ( //TÄMÄ ASIA KESKEN
+              <Pressable
+              type="reset"
+              onPress={()=> resetHandler()}
+              title= "Tyhjennä"
+              color="#ffffff">
+                <Text style={styles.empty}>Tyhjennä</Text>
+              </Pressable>
+            ),
             
         })
     }, [])
@@ -129,12 +139,15 @@ export default function Lomake({navigation}){
       console.log("lomaketiedot", reportinfo);
       resetForm();
     };
-
+    const resetHandler = (values, props) => {
+      props.resetForm()
+    }
     return (
 
         <Screen>
           {/* määritellään aloitusarvot */}
           <Form
+            enableReinitialize
             initialValues={{
               title: "",
               price: "",
@@ -174,4 +187,9 @@ const styles = StyleSheet.create({
     container: {
       padding: 10,
     },
+    empty:{
+      color: "#ffffff",
+      width: 70,
+      fontFamily: Platform.OS === 'android' ? 'Roboto' : 'Avenir',
+    }
   });

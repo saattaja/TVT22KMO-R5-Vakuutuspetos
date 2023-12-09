@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import {useState, useEffect, useMemo} from 'react'
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, Pressable } from 'react-native';
 import { firestore } from 'firebase/firestore';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -60,10 +60,13 @@ export default function App() {
         component={Lomake}
         options={{
           title: 'Lomake',
-          headerTitle: 'Lähetä vahinkoilmoituslomake',
+          headerTitle: 'Lähetä vahinkoilmoitus',
           headerTitleStyle: { color: 'white' },
           tabBarIcon: ({color,size})=>(
           <AntDesign name="plus" size={size} color="steelblue"></AntDesign>
+          ),
+          headerRight: ()=> (
+            <Pressable title="empty" style={styles.empty}></Pressable>
           )
         }}></Tab.Screen>
         <Tab.Screen
@@ -109,4 +112,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  empty:{
+    width: 100
+  }
 });
