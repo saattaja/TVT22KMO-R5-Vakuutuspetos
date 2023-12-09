@@ -29,6 +29,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
     { label: "Koti ja irtaimisto", value: 2 },
     { label: "Muu omaisuus", value: 3 },
   ];
+
 export default function Lomake({navigation}){
   const [image, setImage] = useState(null);
   const [uuid, setUuid] = useState("");
@@ -56,6 +57,7 @@ export default function Lomake({navigation}){
             
         })
     }, [])
+
     async function uploadImageAsync(uri) {
       // Why are we using XMLHttpRequest? See:
       // https://github.com/expo/expo/issues/2402#issuecomment-443726662
@@ -81,7 +83,8 @@ export default function Lomake({navigation}){
     
       return await getDownloadURL(fileRef);
     }
-    const addReport = async (reportinfo, { resetForm }) => {
+
+    const addReport = async (reportinfo, { resetForm, setFieldValue  }) => {
       try {
 
         setIsLoading(true); // Näytä latausindikaattori
@@ -127,9 +130,22 @@ export default function Lomake({navigation}){
         setIsLoading(false); // Piilota latausindikaattori
       }
       console.log("lomaketiedot", reportinfo);
-      resetForm();
+      resetForm(setFieldValue);
     };
-
+    
+    function resetForm(setFieldValue) {
+      const initialValues = {
+        title: "",
+        price: "",
+        description: "",
+        category: null,
+        picture: null,
+      };
+    
+      Object.keys(initialValues).forEach((fieldName) => {
+        setFieldValue(fieldName, initialValues[fieldName]);
+      });
+    }
     return (
 
         <Screen>
