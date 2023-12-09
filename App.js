@@ -43,6 +43,7 @@ export default function App() {
       <Tab.Navigator initialRouteName='Home'
       screenOptions={{
         tabBarActiveTintColor: 'palevioletred',
+        tabBarHideOnKeyboard: true
       }}>
         <Tab.Screen
         name="Home"

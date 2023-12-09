@@ -72,7 +72,7 @@ if(!ilmoitusDataLoaded){
 return <Screen><Text>Loading..</Text></Screen>}
 else{
 return(
-    <Screen>
+    <View style={styles.container}>
     <Text style={styles.text}>Alla näet lähettämäsi vahinkoilmoitukset sekä niiden tilat. Klikkaamalla näet lisätietoja.</Text>
     <FlatList 
     data={sent}
@@ -94,7 +94,7 @@ return(
     }
     ItemSeparatorComponent={ListItemSeparator}
     />
-    </Screen>
+    </View>
 )
 }
 
@@ -103,10 +103,9 @@ return(
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
+        flex: 1,
+        padding: 10,
+        paddingBottom: 10
       
     },
     clickable:{
