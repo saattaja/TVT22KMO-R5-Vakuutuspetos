@@ -52,7 +52,8 @@ useEffect(()=>{
                     state: doc.data().tila,
                     title: doc.data().title,
                     price: doc.data().damageValue,
-                    description: doc.data().description
+                    description: doc.data().description,
+                    picture: doc.data().picture
                 }
                 tempSent.push(sentObject)
             })
@@ -71,7 +72,7 @@ if(!ilmoitusDataLoaded){
 return <Screen><Text>Loading..</Text></Screen>}
 else{
 return(
-    <Screen>
+    <View style={styles.container}>
     <Text style={styles.text}>Alla näet lähettämäsi vahinkoilmoitukset sekä niiden tilat. Klikkaamalla näet lisätietoja.</Text>
     <FlatList 
     data={sent}
@@ -93,35 +94,18 @@ return(
     }
     ItemSeparatorComponent={ListItemSeparator}
     />
-    </Screen>
+    </View>
 )
 }
 
 }
 
 
-{/* <Screen>
-<ScrollView>
-    <Text>Alla näet lähettämäsi vahinkoilmoitukset sekä niiden tilat. Klikkaamalla näet lisätietoja.</Text>
-    {
-        sent.map((report)=>(
-            <View key={report.id} style={styles.clickable}>
-                
-                <Text style={styles.title}>{report.title} {report.created}</Text>
-                <Text>{report.state}</Text>
-                
-            </View>
-        ))
-    }
-</ScrollView>
-</Screen>  */}
-
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
+        flex: 1,
+        padding: 10,
+        paddingBottom: 10
       
     },
     clickable:{

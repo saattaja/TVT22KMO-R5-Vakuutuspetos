@@ -53,8 +53,8 @@ function AppPicker({icon, items, onSelectItem, placeholder, selectedItem}) {
 
 const styles = StyleSheet.create({
     container: {
-      backgroundColor: '#f8f4f4',
-      borderRadius: 25,
+      backgroundColor: '#ffffff',
+      borderRadius: 0,
       flexDirection: "row",
       width: "100%",
       padding: 15,
