@@ -17,10 +17,12 @@ const AccInfoNavigation = () => (
         <Stack.Screen name="accinfo" component={AccountInfo}   options={{
           headerTitle: 'Käyttäjätiedot',
           headerTitleStyle: { color: 'white' },
+          headerTintColor: 'white'
         }}/>
         <Stack.Screen name="changepassword" component={ChangePassword}   options={{
           headerTitle: 'Vaihda salasana',
           headerTitleStyle: { color: 'white' },
+          headerTintColor: 'steelblue'
         }}/>
     </Stack.Navigator>
 )

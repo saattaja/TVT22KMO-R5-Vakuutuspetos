@@ -37,17 +37,17 @@ export default function Account({navigation}){
     
     function showConfirmDialog() {
         return Alert.alert(
-            "Are you sure?",
-            "Do you want to remove your Account?",
+            "Oletko varma?",
+            "Haluatko poistaa käyttäjäsi?",
             [
                 {
-                    text: "Yes",
+                    text: "Kyllä",
                     onPress: () => {
                         showReauthDialog()
                     },
                 },
                 {
-                    text: "No"
+                    text: "Ei"
                 },
             ]
         );
@@ -75,6 +75,14 @@ export default function Account({navigation}){
     }
 
     function logOut(){
+
+        Alert.alert(
+            "Oletko varma?",
+            "Kirjaudutaan ulos?",
+            [
+                {
+                    text: "Kyllä",
+                    onPress: () => {             
         signOut(auth)
         AsyncStorage.removeItem('user')
         .then(()=>{
@@ -83,6 +91,14 @@ export default function Account({navigation}){
         .catch((error)=>{
             console.log("errori:", error)
         })
+                    },
+                },
+                {
+                    text: "Ei"
+                },
+            ]
+        );
+
     }
 
     return(

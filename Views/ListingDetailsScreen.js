@@ -10,16 +10,25 @@ const listing = route.params;
 const [imageUrl, setImageUrl]= useState();
 const storage = getStorage();
 const userRef = ref(storage, "users");
-const filename = ref(userRef, listing.picture)
-const filePath = filename.fullPath;
+const filename = listing.picture ? ref(userRef, listing.picture) : null;
+const filePath = filename ? filename.fullPath : null;
 
-getDownloadURL(ref(storage, filePath))
-.then((url)=>{
-    setImageUrl(url)
-})
+if (filePath) {
+  getDownloadURL(ref(storage, filePath))
+    .then((url) => {
+      setImageUrl(url);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
     return (
         <View>
- <Image style={styles.image} source={{uri: imageUrl}}/>
+{imageUrl ? (
+   <Image style={styles.image} source={{uri: imageUrl}}/>
+) : (
+  <Image style={styles.image} source={require('../assets/noimage.jpg')} />
+)}
  <View style={styles.detailsContainer}>
  <Text style={styles.title}>{listing.title}</Text>
  <Text style={styles.desc}>{listing.description}</Text>
