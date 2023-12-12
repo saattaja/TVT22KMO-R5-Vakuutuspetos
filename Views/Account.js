@@ -16,6 +16,7 @@ import ReauthModal from "./ReauthModal";
 
 export default function Account({navigation}){
     const {signOuts} = useContext(AuthContext);
+    const {logOffBroker} = useContext(AuthContext)
     const [isReauthDialogVisible, setReauthDialogVisible] = useState(false);
 
     function showReauthDialog() {
@@ -87,6 +88,8 @@ export default function Account({navigation}){
         AsyncStorage.removeItem('user')
         .then(()=>{
             signOuts();
+            logOffBroker();
+            
         })
         .catch((error)=>{
             console.log("errori:", error)

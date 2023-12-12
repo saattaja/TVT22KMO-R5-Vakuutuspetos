@@ -58,7 +58,7 @@ export default function Lomake({navigation}){
             headerRight: () => ( //TÄMÄ ASIA KESKEN
               <Pressable
               type="reset"
-              onPress={()=> resetHandler()}
+              onPress={()=> resetForm()}
               title= "Tyhjennä"
               color="#ffffff">
                 <Text style={styles.empty}>Tyhjennä</Text>
