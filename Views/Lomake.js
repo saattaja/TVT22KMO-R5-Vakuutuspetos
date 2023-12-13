@@ -10,8 +10,8 @@ import {
 } from "../components/forms";
 import Screen from "../components/Screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { collection, firestore, query } from "../Firebase/Config";
-import { addDoc, serverTimestamp, getDoc } from "firebase/firestore";
+import { USERS, collection, firestore, query } from "../Firebase/Config";
+import { addDoc, serverTimestamp, getDoc, onSnapshot, doc } from "firebase/firestore";
 import * as ImagePicker from 'expo-image-picker';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -34,6 +34,7 @@ export default function Lomake({navigation}){
   const [image, setImage] = useState(null);
   const [uuid, setUuid] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [senderName, setSenderName] = useState("")
   const formRef = useRef();
 
 
@@ -100,12 +101,15 @@ export default function Lomake({navigation}){
         setIsLoading(true); // Näytä latausindikaattori
         const load = await AsyncStorage.getItem('user');
         const userinf = JSON.parse(load);
-    
-        console.log("user", userinf.uid);
         setUuid(userinf.uid);
     
-        if (userinf) {
-          const docRef = collection(firestore, 'users', userinf.uid, 'ilmoitukset');
+        const unsub = onSnapshot(doc(firestore, USERS, userinf.uid), (doc)=>{
+          setSenderName(doc.data().name);
+          console.log("lähettäjä", doc.data().name)
+      })
+
+        if (userinf && senderName) {
+          const docRef = collection(firestore, USERS, userinf.uid, 'ilmoitukset');
     
           // Lisää dokumentti Firestoreen ja hae sen ID
           const addedDocRef = await addDoc(docRef, {
@@ -116,6 +120,7 @@ export default function Lomake({navigation}){
             description: reportinfo.description,
             damageValue: reportinfo.price,
             title: reportinfo.title,
+            sender: senderName,
             picture: image ? image.substring(image.lastIndexOf('/') + 1, image.length) : null,
           });
     
@@ -138,9 +143,11 @@ export default function Lomake({navigation}){
         console.log(error);
       } finally {
         setIsLoading(false); // Piilota latausindikaattori
+        
       }
       console.log("lomaketiedot", reportinfo);
       resetForm(setFieldValue);
+      setSenderName("");
     };
     
     function resetForm(setFieldValue) {

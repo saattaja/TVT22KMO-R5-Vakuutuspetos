@@ -61,7 +61,6 @@ const validationSchema = Yup.object().shape({
           console.log("autentikointi", auth);
           console.log("login succeeded");
           console.log("käyttelijä", user);
-          console.log("käyttäjätyyppi", user.uid.type)
           storeUserData(user);
           account(user);
           signIn();
