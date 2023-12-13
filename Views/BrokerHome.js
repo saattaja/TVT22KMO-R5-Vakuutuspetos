@@ -19,7 +19,7 @@ export default function BrokerHome({navigation}){
         })
     }, [])
 
-    const [userDataLoaded, setUserDataLoaded] = useState(false);
+const [userDataLoaded, setUserDataLoaded] = useState(false);
 const [ilmoitusDataLoaded, setIlmoitusDataLoaded] = useState(false);
 const [userData, setUserData] = useState(null);
 const [role, setRole] = useState("");

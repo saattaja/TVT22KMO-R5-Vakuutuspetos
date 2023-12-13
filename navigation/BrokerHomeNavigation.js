@@ -11,7 +11,6 @@ const BrokerNavigator = () => (
           title: 'Vakuutuskäsittelijä',
           headerTitle: 'Vakuutuskäsitteelijä',
           headerTitleStyle: { color: 'white' },
-
         }}/>
         <Stack.Screen name="listingdetails" component={ListingDetailsScreen}   options={{
           headerTitle: 'Lähetetty lomake'

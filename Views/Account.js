@@ -84,16 +84,16 @@ export default function Account({navigation}){
                 {
                     text: "Kyllä",
                     onPress: () => {             
-        signOut(auth)
-        AsyncStorage.removeItem('user')
-        .then(()=>{
-            signOuts();
-            logOffBroker();
-            
-        })
-        .catch((error)=>{
-            console.log("errori:", error)
-        })
+                        signOut(auth)
+                        AsyncStorage.removeItem('user')
+                        .then(()=>{
+                            signOuts();
+                            logOffBroker();
+                            
+                        })
+                        .catch((error)=>{
+                            console.log("errori:", error)
+                        })
                     },
                 },
                 {

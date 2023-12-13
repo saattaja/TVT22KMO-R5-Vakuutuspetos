@@ -16,7 +16,8 @@ const validationSchema = Yup.object().shape({
   function LoginScreen(props) {
     const {signIn} = useContext(AuthContext);
     const {isBroker} = useContext(AuthContext);
-  
+    const {isAdmin} = useContext(AuthContext);
+
     const storeUserData = async (value) => {
       try {
         const jsonValue = JSON.stringify(value);
@@ -33,7 +34,12 @@ const validationSchema = Yup.object().shape({
           console.log("yritetään",doc.data())
           rooli = doc.data().type;
           if(rooli){
-            isBroker()
+            if(rooli == "admin"){
+              isAdmin();
+            }else{
+              isBroker();
+            }
+            
           }
 })
       } catch (error) {
