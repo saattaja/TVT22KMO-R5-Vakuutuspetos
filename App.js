@@ -21,11 +21,7 @@ import FeedNavigator from './navigation/FeedNavigation';
 import AccInfoNavigation from './navigation/AccInfoNavigation';
 import BrokerNavigator from './navigation/BrokerHomeNavigation';
 
-
-
-
 export default function App() {
-
   const Tab = createBottomTabNavigator();
   const [authenticated, setAuthenticated] = useState(false);
   const [isBroker, setIsBroker] = useState(false)
@@ -36,9 +32,10 @@ export default function App() {
     ()=>({
       signIn: () => setAuthenticated(true),
       signOuts: ()=> setAuthenticated(false),
-      logOffBroker: () =>setIsBroker(false),
+      logOffBroker: () => setIsBroker(false),
       isBroker: ()=> setIsBroker(true),
-      isAdmin: ()=> setIsAdmin(true)
+      isAdmin: ()=> setIsAdmin(true),
+      logOffAdmin: ()=> setIsAdmin(false)
     }),
     []
   );

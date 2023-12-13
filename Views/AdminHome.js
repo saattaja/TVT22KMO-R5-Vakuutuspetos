@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Text, FlatList, Pressable, Alert } from "react-native";
-import {collection,doc, firestore, onSnapshot, query, USERS,} from "../Firebase/Config";
+import {collection, doc, firestore, onSnapshot, USERS,} from "../Firebase/Config";
 import Screen from "../components/Screen";
 import ListItem from "../components/ListItem";
 import ListItemSeparator from "../components/ListItemSeparator";
@@ -35,15 +35,11 @@ export default function AdminHome({ navigation }) {
       const changeUserType = async (userId, newType) => {
         try {
             const userDocRef = doc(firestore, 'users', userId);
-    
-            // Update the 'type' field or create it if it doesn't exist
             await setDoc(userDocRef, { type: newType }, { merge: true });
 
             Alert.alert('Success', 'User type changed successfully.');
             } catch (error) {
                 console.error('Error updating user type:', error);
-
-                // Notify the user that an error occurred
                 Alert.alert('Error', 'An error occurred while updating user type.');
             }
     };
@@ -51,11 +47,10 @@ export default function AdminHome({ navigation }) {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          // Fetch user data from AsyncStorage
           const jsonValue = await AsyncStorage.getItem("user");
           const parsedUser = JSON.parse(jsonValue);
           setUserData(parsedUser);
-          setUserDataLoaded(true); // Mark user data as loaded
+          setUserDataLoaded(true);
         } catch (error) {
           console.log("Error in homescreen AsyncStorage read: " + error);
         }
@@ -98,29 +93,29 @@ export default function AdminHome({ navigation }) {
     }, [userData, userDataLoaded]);
     
       return (
-        <Screen>
-          <Text>Welcome, Admin!</Text>
-          <FlatList
-            data={usersData}
-            keyExtractor={(user) => user.id}
-            renderItem={({ item }) => (
-                <ListItem
-                    title={item.email}
-                    subTitle={`Type: ${item.type}`}
-                    onPress={() => handleUserPress(item.id, item.type)}
+            <Screen>
+            <Text>Welcome, Admin!</Text>
+            <FlatList
+                data={usersData}
+                keyExtractor={(user) => user.id}
+                renderItem={({ item }) => (
+                    <ListItem
+                        title={item.email}
+                        subTitle={`Type: ${item.type}`}
+                        onPress={() => handleUserPress(item.id, item.type)}
+                    />
+                )}
+                ItemSeparatorComponent={ListItemSeparator}
+                keyboardShouldPersistTaps="handled"
                 />
-            )}
-            ItemSeparatorComponent={ListItemSeparator}
-            keyboardShouldPersistTaps="handled"
+            {selectedUserId && (
+            <TypeChangeModal
+                isVisible={modalVisible}
+                userId={selectedUserId}
+                onCancel={handleModalCancel}
+                onOK={handleModalOK}
             />
-        {selectedUserId && (
-        <TypeChangeModal
-            isVisible={modalVisible}
-            userId={selectedUserId}
-            onCancel={handleModalCancel}
-            onOK={handleModalOK}
-        />
-      )}
-    </Screen>
-  );
+        )}
+        </Screen>
+    );
   }

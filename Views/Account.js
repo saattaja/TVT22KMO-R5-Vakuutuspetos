@@ -16,7 +16,8 @@ import ReauthModal from "./ReauthModal";
 
 export default function Account({navigation}){
     const {signOuts} = useContext(AuthContext);
-    const {logOffBroker} = useContext(AuthContext)
+    const {logOffBroker} = useContext(AuthContext);
+    const {logOffAdmin} = useContext(AuthContext);
     const [isReauthDialogVisible, setReauthDialogVisible] = useState(false);
 
     function showReauthDialog() {
@@ -76,7 +77,6 @@ export default function Account({navigation}){
     }
 
     function logOut(){
-
         Alert.alert(
             "Oletko varma?",
             "Kirjaudutaan ulos?",
@@ -87,9 +87,9 @@ export default function Account({navigation}){
                         signOut(auth)
                         AsyncStorage.removeItem('user')
                         .then(()=>{
-                            signOuts();
                             logOffBroker();
-                            
+                            logOffAdmin();
+                            signOuts();
                         })
                         .catch((error)=>{
                             console.log("errori:", error)
@@ -101,7 +101,6 @@ export default function Account({navigation}){
                 },
             ]
         );
-
     }
 
     return(

@@ -17,7 +17,8 @@ const validationSchema = Yup.object().shape({
     const {signIn} = useContext(AuthContext);
     const {isBroker} = useContext(AuthContext);
     const {isAdmin} = useContext(AuthContext);
-
+    const {logOffBroker} = useContext(AuthContext);
+    const {logOffAdmin} = useContext(AuthContext);
     const storeUserData = async (value) => {
       try {
         const jsonValue = JSON.stringify(value);
@@ -35,11 +36,16 @@ const validationSchema = Yup.object().shape({
           rooli = doc.data().type;
           if(rooli){
             if(rooli == "admin"){
+              console.log("admin " + rooli);
               isAdmin();
             }else{
               isBroker();
+              console.log("broker " + rooli);
             }
-            
+          }else{
+            console.log("ei kumpikaan " + rooli);
+            logOffAdmin();
+            logOffBroker();
           }
 })
       } catch (error) {
