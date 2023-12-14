@@ -10,8 +10,8 @@ import {
 } from "../components/forms";
 import Screen from "../components/Screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { collection, firestore, query } from "../Firebase/Config";
-import { addDoc, serverTimestamp, getDoc } from "firebase/firestore";
+import { USERS, collection, firestore, query } from "../Firebase/Config";
+import { addDoc, serverTimestamp, getDoc, onSnapshot, doc } from "firebase/firestore";
 import * as ImagePicker from 'expo-image-picker';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -29,10 +29,12 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
     { label: "Koti ja irtaimisto", value: 2 },
     { label: "Muu omaisuus", value: 3 },
   ];
+
 export default function Lomake({navigation}){
   const [image, setImage] = useState(null);
   const [uuid, setUuid] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [senderName, setSenderName] = useState("")
   const formRef = useRef();
 
 
@@ -57,7 +59,7 @@ export default function Lomake({navigation}){
             headerRight: () => ( //TÄMÄ ASIA KESKEN
               <Pressable
               type="reset"
-              onPress={()=> resetHandler()}
+              onPress={()=> resetForm()}
               title= "Tyhjennä"
               color="#ffffff">
                 <Text style={styles.empty}>Tyhjennä</Text>
@@ -66,6 +68,7 @@ export default function Lomake({navigation}){
             
         })
     }, [])
+
     async function uploadImageAsync(uri) {
       // Why are we using XMLHttpRequest? See:
       // https://github.com/expo/expo/issues/2402#issuecomment-443726662
@@ -91,18 +94,22 @@ export default function Lomake({navigation}){
     
       return await getDownloadURL(fileRef);
     }
-    const addReport = async (reportinfo, { resetForm }) => {
+
+    const addReport = async (reportinfo, { resetForm, setFieldValue  }) => {
       try {
 
         setIsLoading(true); // Näytä latausindikaattori
         const load = await AsyncStorage.getItem('user');
         const userinf = JSON.parse(load);
-    
-        console.log("user", userinf.uid);
         setUuid(userinf.uid);
     
-        if (userinf) {
-          const docRef = collection(firestore, 'users', userinf.uid, 'ilmoitukset');
+        const unsub = onSnapshot(doc(firestore, USERS, userinf.uid), (doc)=>{
+          setSenderName(doc.data().name);
+          console.log("lähettäjä", doc.data().name)
+      })
+
+        if (userinf && senderName) {
+          const docRef = collection(firestore, USERS, userinf.uid, 'ilmoitukset');
     
           // Lisää dokumentti Firestoreen ja hae sen ID
           const addedDocRef = await addDoc(docRef, {
@@ -113,6 +120,7 @@ export default function Lomake({navigation}){
             description: reportinfo.description,
             damageValue: reportinfo.price,
             title: reportinfo.title,
+            sender: senderName,
             picture: image ? image.substring(image.lastIndexOf('/') + 1, image.length) : null,
           });
     
@@ -135,12 +143,25 @@ export default function Lomake({navigation}){
         console.log(error);
       } finally {
         setIsLoading(false); // Piilota latausindikaattori
+        
       }
       console.log("lomaketiedot", reportinfo);
-      resetForm();
+      resetForm(setFieldValue);
+      setSenderName("");
     };
-    const resetHandler = (values, props) => {
-      props.resetForm()
+    
+    function resetForm(setFieldValue) {
+      const initialValues = {
+        title: "",
+        price: "",
+        description: "",
+        category: null,
+        picture: null,
+      };
+    
+      Object.keys(initialValues).forEach((fieldName) => {
+        setFieldValue(fieldName, initialValues[fieldName]);
+      });
     }
     return (
 

@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext} from "react";
 import { StyleSheet, Image, View, Text, Pressable, Alert } from "react-native";
 import * as Yup from "yup";
-import { auth } from "../Firebase/Config";
+import { auth, USERS, onSnapshot, doc, firestore } from "../Firebase/Config";
 import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { AppForm, AppFormField, SubmitButton } from "../components/forms";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -15,7 +15,10 @@ const validationSchema = Yup.object().shape({
 
   function LoginScreen(props) {
     const {signIn} = useContext(AuthContext);
-  
+    const {isBroker} = useContext(AuthContext);
+    const {isAdmin} = useContext(AuthContext);
+    const {logOffBroker} = useContext(AuthContext);
+    const {logOffAdmin} = useContext(AuthContext);
     const storeUserData = async (value) => {
       try {
         const jsonValue = JSON.stringify(value);
@@ -26,12 +29,39 @@ const validationSchema = Yup.object().shape({
       }
     }
 
+    const account = async(user)=>{
+      try {
+        const unsub = onSnapshot(doc(firestore, USERS, user.uid), (doc)=>{
+          console.log("yritetään",doc.data())
+          rooli = doc.data().type;
+          if(rooli){
+            if(rooli == "admin"){
+              console.log("admin " + rooli);
+              isAdmin();
+            }else{
+              isBroker();
+              console.log("broker " + rooli);
+            }
+          }else{
+            console.log("ei kumpikaan " + rooli);
+            logOffAdmin();
+            logOffBroker();
+          }
+})
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
     useEffect(() => {
       const unsubscribe = onAuthStateChanged(auth, (user) => {
         AsyncStorage.removeItem('user');
       });
       return () => unsubscribe();
     }, [auth]);
+
+  
+  
   
     function handleSubmit(values){
       console.log("sposti",values);
@@ -44,6 +74,7 @@ const validationSchema = Yup.object().shape({
           console.log("login succeeded");
           console.log("käyttelijä", user);
           storeUserData(user);
+          account(user);
           signIn();
           //setAuthenticated(true);
           //console.log(user);
