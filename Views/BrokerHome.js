@@ -27,6 +27,8 @@ const [cars, setCars] = useState(false);
 const [property, setProperty] = useState(false);
 const [other, setOther] = useState(false);
 const [sent, setSent]= useState([])
+const [usersData, setUsersData] = useState([])
+const [usersDataLoaded, setUsersDataLoaded] = useState(false)
 
 useEffect(() => {
     const fetchData = async () => {
@@ -35,6 +37,7 @@ useEffect(() => {
           const parsedUser = JSON.parse(jsonValue);
           setUserData(parsedUser);
           setUserDataLoaded(true); // Mark user data as loaded
+          console.log("userdataloaded" + userDataLoaded)
       } catch (error) {
         console.log("Error in homescreen AsyncStorage read: " + error);
       }
@@ -48,28 +51,43 @@ useEffect(()=>{
     if (userDataLoaded){
         const unsub = onSnapshot(doc(firestore, USERS, userData.uid), (doc)=>{
             setRole(doc.data().type)
-            console.log(doc.data().type)
-            console.log("rooli",role)
+            console.log("roolib" + role)
             
+        },
+        (error)=>{
+            console.log(error)
         })
+      
+        const usersQuery = collection(firestore, USERS);
+            const usersUnsub = onSnapshot(usersQuery, (querySnapshot) => {
+                const tempUsersData = [];
+                querySnapshot.forEach((doc) => {
+                    const tempUserData = {
+                        id: doc.id,
+                        email: doc.data().email,
+                        name: doc.data().name,
+                    };
+                    tempUsersData.push(tempUserData);
+                });
+                setUsersData(tempUsersData);
+                console.log("käyttäjädata",usersData)
+                setUsersDataLoaded(true)
+                console.log("onko ladattu",usersDataLoaded)
+            });
+            return () => {
+                unsub()
+                usersUnsub();
+                
+                
+            };
         }
 
-}, [userData, userDataLoaded])
+}, [ userDataLoaded])
 
-
-
-/*if(role === "Auto"){
-setCars(true)
-}
-else if(role === "Omaisuus"){
-    setProperty(true)
-}
-else{
-    setOther(true)
-}*/
-useEffect(()=>{
-    if (userDataLoaded){
-        const q = query(collection(firestore, USERS))
+//tämä seuraava asia on kesken eikä toimi
+/*useEffect(()=>{
+    if (usersDataLoaded){
+        const q = query(collection(firestore, USERS, usersData.id, "ilmoitukset"))
     
         const unsubscribe = onSnapshot(q,(querySnapshot)=>{
             const tempSent = []
@@ -94,9 +112,13 @@ useEffect(()=>{
             }
         }
 
-}, [role, userDataLoaded])
-return(
-    <Screen><Text>Olet meklari.</Text>
+}, [usersData, usersDataLoaded])*/
+
+if(!ilmoitusDataLoaded){
+    return <Screen><Text>Olet meklari.</Text></Screen>}
+    else{
+        return(
+            <Screen>
     <FlatList 
     data={sent}
     keyExtractor={message => message.id.toString()}
@@ -117,5 +139,4 @@ return(
     }
     ItemSeparatorComponent={ListItemSeparator}
     /></Screen>
-)
-}
+)}}
