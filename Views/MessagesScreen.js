@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useLayoutEffect } from 'react';
-import { FlatList, StyleSheet, SafeAreaView, ScrollView, Text, View, Button } from 'react-native';
+import { FlatList, StyleSheet, SafeAreaView, ScrollView, Text, View, Button, Modal } from 'react-native';
 import { convertFirebaseTimeStampToJS } from "../Helpers/Timestamp";
 import {firestore, collection, query, onSnapshot, doc, USERS, getDoc, getDocs, orderBy} from "../Firebase/Config"
 import ListItem from '../components/ListItem';
@@ -7,6 +7,7 @@ import Screen from '../components/Screen';
 import ListItemSeparator from '../components/ListItemSeparator';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from '../components/Icon';
+import Card from '../components/Card';
 
 
 function MessagesScreen(props) {
@@ -16,6 +17,9 @@ function MessagesScreen(props) {
     const [userDataLoaded, setUserDataLoaded] = useState(false);
     const [ilmoitusDataLoaded, setIlmoitusDataLoaded] = useState(false);
     const [refreshing, setRefreshing] = useState(false)
+    const [modalVisible, setModalVisible] = useState(false) 
+    const [selectedMessage, setSelectedMessage] = useState('') 
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -86,19 +90,30 @@ function MessagesScreen(props) {
                 backgroundColor="gray"
                 />
             }
-            onPress={() => console.log("Message selected", item)}
+            onPress={() => {
+                setModalVisible(true)
+                setSelectedMessage(item)
+            }}
             />
             }
             ItemSeparatorComponent={ListItemSeparator}
           /*   refreshing={refreshing}
-            onRefresh={() => setMessages([{
-            id: 2,
-            title: 'T2',
-            description: 'D2',
-            image: require('../assets/person.webp')
-            }])} */
+            onRefresh={() => } */
+            />
+
+<Modal visible={modalVisible} animationType='slide'>
+            <Screen>
+            <Button title="sulje" onPress={() => setModalVisible(false)}/>
+            <Card 
+            title={selectedMessage.title}
+            message={selectedMessage.message} 
+            typeTitle={selectedMessage.typeTitle}
+            created={selectedMessage.created}
             />
             </Screen>
+        </Modal>
+            </Screen>
+            
     ); }
 }
 
