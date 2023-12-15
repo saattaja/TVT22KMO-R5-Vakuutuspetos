@@ -29,6 +29,7 @@ const [other, setOther] = useState(false);
 const [sent, setSent]= useState([])
 const [ilmoitukset, setIlmoitukset]= useState([])
 const [ilmoituksetLoated, setIlmoituksetLoated] = useState(false);
+const [refreshing, setRefreshing] = useState(false)
 
 
 useEffect(() => {
@@ -98,40 +99,44 @@ useEffect(()=>{
 
 useEffect(() => {
     if (userDataLoaded) {
-      const tempIlmoitukset = [];
-  
-      const fetchData = async () => {
-        const promises = sent.map(async (user) => {
-          const ilmoitusQuery = query(collection(firestore, USERS, user.id, "ilmoitukset"), orderBy('created', 'desc'));
-          const ilmoitusSnapshot = await getDocs(ilmoitusQuery);
-  
-          ilmoitusSnapshot.forEach((doc) => {
-            const ilmoitusObject = {
-              userId: user.id,
-              id: doc.id,
-              created: convertFirebaseTimeStampToJS(doc.data().created),
-              state: doc.data().tila,
-              title: doc.data().title,
-              price: doc.data().damageValue,
-              description: doc.data().description,
-              picture: doc.data().picture,
-              sender: user.title,
-              email: user.description,
-            };
-            tempIlmoitukset.push(ilmoitusObject);
-          });
-        });
-  
-        await Promise.all(promises);
-  
-        console.log(tempIlmoitukset)
-        setIlmoitukset(tempIlmoitukset);
-        setIlmoituksetLoated(true);
-      };
-  
-      fetchData();
+       getIlmoitukset();
     }
   }, [userDataLoaded, sent]);
+
+  const getIlmoitukset = () => {
+    const tempIlmoitukset = [];
+  
+    const fetchData = async () => {
+      const promises = sent.map(async (user) => {
+        const ilmoitusQuery = query(collection(firestore, USERS, user.id, "ilmoitukset"), orderBy('created', 'desc'));
+        const ilmoitusSnapshot = await getDocs(ilmoitusQuery);
+
+        ilmoitusSnapshot.forEach((doc) => {
+          const ilmoitusObject = {
+            userId: user.id,
+            id: doc.id,
+            created: convertFirebaseTimeStampToJS(doc.data().created),
+            state: doc.data().tila,
+            title: doc.data().title,
+            price: doc.data().damageValue,
+            description: doc.data().description,
+            picture: doc.data().picture,
+            sender: user.title,
+            email: user.description,
+          };
+          tempIlmoitukset.push(ilmoitusObject);
+        });
+      });
+
+      await Promise.all(promises);
+
+      console.log(tempIlmoitukset)
+      setIlmoitukset(tempIlmoitukset);
+      setIlmoituksetLoated(true);
+    };
+
+    fetchData();
+  }
 
   
   if(!ilmoituksetLoated){
@@ -159,6 +164,8 @@ useEffect(() => {
         />
         }
         ItemSeparatorComponent={ListItemSeparator}
+        refreshing={refreshing}
+        onRefresh={() => getIlmoitukset()}
         />
         </View>
     ) }
