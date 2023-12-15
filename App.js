@@ -20,6 +20,7 @@ import AuthContext from './Helpers/AuthContext';
 import FeedNavigator from './navigation/FeedNavigation';
 import AccInfoNavigation from './navigation/AccInfoNavigation';
 import BrokerNavigator from './navigation/BrokerHomeNavigation';
+import MessagesScreen from './Views/MessagesScreen';
 
 export default function App() {
   const Tab = createBottomTabNavigator();

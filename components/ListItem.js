@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text, TouchableHighlight } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-function ListItem({title, subTitle, IconComponent, onPress, sended, state }) {
+function ListItem({title, subTitle, IconComponent, onPress, sended, state, type}) {
 
     const stateColors = {
         Lähetetty: '#c54840', // punainen
@@ -24,6 +24,7 @@ function ListItem({title, subTitle, IconComponent, onPress, sended, state }) {
         <View style={styles.detailsContainer}>
             <Text style={styles.title} numberOfLines={1}>{title}</Text>
         {subTitle && <Text style={styles.subTitle} numberOfLines={2}>{subTitle}</Text>}
+        {type && <Text style={styles.type}>{type}</Text>}
         {sended && <Text style={styles.time} numberOfLines={1}>{sended}</Text>}
         {state && <Text style={[styles.state, stateStyle]} numberOfLines={1}>{state}</Text>}
         </View>
@@ -64,6 +65,10 @@ const styles = StyleSheet.create({
     },
     state: {
         color: "#96bf44"
+    },
+    type: {
+       color: '#c54840',
+       paddingVertical: 5
     }
 
 })
