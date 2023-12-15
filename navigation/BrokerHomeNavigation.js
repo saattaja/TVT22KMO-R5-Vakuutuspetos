@@ -1,7 +1,7 @@
 import react from 'react';
 import { createStackNavigator } from '@react-navigation/stack'
 import BrokerHome from '../Views/BrokerHome';
-import ListingDetailsScreen from '../Views/ListingDetailsScreen';
+import BrokerListingDetailsScreen from '../Views/BrokerListingDetailsScreen';
 
 const Stack = createStackNavigator();
 
@@ -12,7 +12,7 @@ const BrokerNavigator = () => (
           headerTitle: 'Vakuutuskäsittelijä',
           headerTitleStyle: { color: 'white' },
         }}/>
-        <Stack.Screen name="listingdetails" component={ListingDetailsScreen}   options={{
+        <Stack.Screen name="listingdetails" component={BrokerListingDetailsScreen}   options={{
           headerTitle: 'Lähetetty lomake'
         }}/>
     </Stack.Navigator>
