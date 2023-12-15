@@ -9,6 +9,7 @@ import ListItemSeparator from "../components/ListItemSeparator";
 import { convertFirebaseTimeStampToJS } from "../Helpers/Timestamp";
 import Icon from "../components/Icon";
 import Card from "../components/Card";
+import AnswerCard from "../components/AnswerCard";
 
 export default function BrokerMessages({navigation}){
     useLayoutEffect(()=>{
@@ -178,7 +179,10 @@ useEffect(() => {
     message={selectedMessage.message} 
     typeTitle={selectedMessage.typeTitle}
     created={selectedMessage.created}
+    sender={selectedMessage.sender}
+    email={selectedMessage.email}
     />
+    <AnswerCard customer={selectedMessage.userId} viesti={selectedMessage.id}/>
     </Screen>
 </Modal>
     </Screen>
