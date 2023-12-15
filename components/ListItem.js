@@ -3,6 +3,17 @@ import { View, StyleSheet, Text, TouchableHighlight } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 function ListItem({title, subTitle, IconComponent, onPress, sended, state }) {
+
+    const stateColors = {
+        Lähetetty: '#c54840', // punainen
+        Käsittelyssä: '#ffd700', // keltainen
+        Ratkaistu: '#96bf44', // vihreä
+      };
+    
+      const stateStyle = state ? { color: stateColors[state] } : null;
+    
+
+
     return (
        <TouchableHighlight
        onPress={onPress}
@@ -14,7 +25,7 @@ function ListItem({title, subTitle, IconComponent, onPress, sended, state }) {
             <Text style={styles.title} numberOfLines={1}>{title}</Text>
         {subTitle && <Text style={styles.subTitle} numberOfLines={2}>{subTitle}</Text>}
         {sended && <Text style={styles.time} numberOfLines={1}>{sended}</Text>}
-        {state && <Text style={styles.state} numberOfLines={1}>{state}</Text>}
+        {state && <Text style={[styles.state, stateStyle]} numberOfLines={1}>{state}</Text>}
         </View>
         <MaterialCommunityIcons name="chevron-right"
         size={25}
