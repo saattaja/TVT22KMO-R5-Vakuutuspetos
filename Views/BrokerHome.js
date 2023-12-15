@@ -116,7 +116,7 @@ useEffect(() => {
               description: doc.data().description,
               picture: doc.data().picture,
               sender: user.title,
-              email: user.description
+              email: user.description,
             };
             tempIlmoitukset.push(ilmoitusObject);
           });
@@ -149,8 +149,6 @@ useEffect(() => {
         subTitle={item.description}
         sended={item.created}
         state={item.state}
-        sender={item.sender}
-        email={item.email}
         IconComponent={
             <Icon 
             name= "email"
