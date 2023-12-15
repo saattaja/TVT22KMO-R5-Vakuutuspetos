@@ -1,7 +1,7 @@
 import React from "react";
 import { useLayoutEffect, useState, useEffect } from "react";
-import { Text, FlatList } from "react-native";
-import {collection, doc, USERS, where, firestore, query, getDocs, onSnapshot} from '../Firebase/Config'
+import { Text, FlatList, StyleSheet, View } from "react-native";
+import {collection, doc, USERS, where, firestore, query, getDocs, onSnapshot, orderBy} from '../Firebase/Config'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Screen from "../components/Screen";
 import ListItem from "../components/ListItem";
@@ -27,6 +27,9 @@ const [cars, setCars] = useState(false);
 const [property, setProperty] = useState(false);
 const [other, setOther] = useState(false);
 const [sent, setSent]= useState([])
+const [ilmoitukset, setIlmoitukset]= useState([])
+const [ilmoituksetLoated, setIlmoituksetLoated] = useState(false);
+
 
 useEffect(() => {
     const fetchData = async () => {
@@ -77,15 +80,12 @@ useEffect(()=>{
             querySnapshot.forEach((doc)=>{
                 const sentObject={
                     id: doc.id,
-                    created: convertFirebaseTimeStampToJS(doc.data().created),
-                    state: doc.data().tila,
                     title: doc.data().name,
-                    price: doc.data().damageValue,
-                    description: doc.data().description,
-                    picture: doc.data().picture
+                    description: doc.data().email,
                 }
                 tempSent.push(sentObject)
             })
+            console.log(tempSent)
                 setSent(tempSent)
                setIlmoitusDataLoaded(true)
             })
@@ -95,8 +95,79 @@ useEffect(()=>{
         }
 
 }, [role, userDataLoaded])
-return(
-    <Screen><Text>Olet meklari.</Text>
+
+useEffect(() => {
+    if (userDataLoaded) {
+      const tempIlmoitukset = [];
+  
+      const fetchData = async () => {
+        const promises = sent.map(async (user) => {
+          const ilmoitusQuery = query(collection(firestore, USERS, user.id, "ilmoitukset"), orderBy('created', 'desc'));
+          const ilmoitusSnapshot = await getDocs(ilmoitusQuery);
+  
+          ilmoitusSnapshot.forEach((doc) => {
+            const ilmoitusObject = {
+              userId: user.id,
+              id: doc.id,
+              created: convertFirebaseTimeStampToJS(doc.data().created),
+              state: doc.data().tila,
+              title: doc.data().title,
+              price: doc.data().damageValue,
+              description: doc.data().description,
+              picture: doc.data().picture,
+              sender: user.title,
+              email: user.description
+            };
+            tempIlmoitukset.push(ilmoitusObject);
+          });
+        });
+  
+        await Promise.all(promises);
+  
+        console.log(tempIlmoitukset)
+        setIlmoitukset(tempIlmoitukset);
+        setIlmoituksetLoated(true);
+      };
+  
+      fetchData();
+    }
+  }, [userDataLoaded, sent]);
+
+  
+  if(!ilmoituksetLoated){
+    return <Screen><Text>Loading..</Text></Screen>}
+    else{
+  return (
+        <View style={styles.container}>
+        <Text style={styles.text}>Asiakkaiden lähettämät ilmoitukset sekä niiden tilat.</Text>
+        <FlatList 
+        data={ilmoitukset}
+        keyExtractor={message => message.id.toString()}
+        renderItem={({item}) => 
+        <ListItem
+        title={item.title}
+        subTitle={item.description}
+        sended={item.created}
+        state={item.state}
+        sender={item.sender}
+        email={item.email}
+        IconComponent={
+            <Icon 
+            name= "email"
+            backgroundColor="gray"
+            />
+        }
+        onPress={() => navigation.navigate("listingdetails", item)}
+        />
+        }
+        ItemSeparatorComponent={ListItemSeparator}
+        />
+        </View>
+    ) }
+
+/* return(
+    <Screen>
+        <Text>Olet meklari.</Text>
     <FlatList 
     data={sent}
     keyExtractor={message => message.id.toString()}
@@ -116,6 +187,37 @@ return(
     />
     }
     ItemSeparatorComponent={ListItemSeparator}
-    /></Screen>
-)
+    />
+    </Screen>
+) */
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 10,
+        paddingBottom: 10
+      
+    },
+    clickable:{
+        backgroundColor: 'white',
+        padding: 10,
+        marginTop: 10,
+        marginBottom: 10,
+        borderRadius: 10,
+        marginLeft: 10,
+        marginRight: 10,
+        justifyContent: "center"
+
+    },
+    title: {
+        textDecorationColor: 'salmon'
+    },
+    text: {
+        margin: 20,
+        fontSize: 15,
+        textAlign: 'center',
+        fontFamily: Platform.OS === 'android' ? 'Roboto' : 'Avenir',
+        color: '#0c0c0c'
+    }
+  });

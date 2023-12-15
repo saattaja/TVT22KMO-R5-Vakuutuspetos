@@ -9,7 +9,7 @@ const BrokerNavigator = () => (
     <Stack.Navigator>
         <Stack.Screen name="feed" component={BrokerHome}   options={{
           title: 'Vakuutuskäsittelijä',
-          headerTitle: 'Vakuutuskäsitteelijä',
+          headerTitle: 'Vakuutuskäsittelijä',
           headerTitleStyle: { color: 'white' },
         }}/>
         <Stack.Screen name="listingdetails" component={ListingDetailsScreen}   options={{

@@ -2,6 +2,7 @@ import React, { useLayoutEffect, useRef, useState } from "react";
 import { Button, StyleSheet, Image, Alert, ActivityIndicator, Pressable, Text } from "react-native";
 import * as Yup from "yup";
 
+
 import {
   AppForm as Form,
   AppFormField as FormField,
@@ -36,6 +37,7 @@ export default function Lomake({navigation}){
   const [isLoading, setIsLoading] = useState(false);
   const [senderName, setSenderName] = useState("")
   const formRef = useRef();
+
 
 
     const pickImage = async () => {
@@ -162,7 +164,7 @@ export default function Lomake({navigation}){
       Object.keys(initialValues).forEach((fieldName) => {
         setFieldValue(fieldName, initialValues[fieldName]);
       });
-    }
+    } 
     return (
 
         <Screen>

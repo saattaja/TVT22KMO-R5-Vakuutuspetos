@@ -32,6 +32,8 @@ if (filePath) {
  <View style={styles.detailsContainer}>
  <Text style={styles.title}>{listing.title}</Text>
  <Text style={styles.desc}>{listing.description}</Text>
+ {listing.sender && <Text style={styles.price}>{"Lähettäjän nimi: " + listing.sender}</Text>}
+ {listing.email && <Text style={styles.price}>{"Sähköposti: " + listing.email}</Text>}
  <Text style={styles.price}>{"Korvaus pyyntö: " + listing.price + "€"}</Text>
  <Text style={styles.price}>{"Tila: " + listing.state}</Text>
  </View>

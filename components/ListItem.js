@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text, TouchableHighlight } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-function ListItem({title, subTitle, IconComponent, onPress, sended, state}) {
+function ListItem({title, subTitle, IconComponent, onPress, sended, state }) {
     return (
        <TouchableHighlight
        onPress={onPress}

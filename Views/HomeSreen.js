@@ -68,6 +68,8 @@ useEffect(()=>{
 }, [userData, userDataLoaded])
 
 
+
+
 if(!ilmoitusDataLoaded){
 return <Screen><Text>Loading..</Text></Screen>}
 else{
