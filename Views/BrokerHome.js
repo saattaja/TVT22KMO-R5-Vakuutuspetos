@@ -48,48 +48,32 @@ useEffect(() => {
 }, []);
 
 
-
 useEffect(()=>{
     if (userDataLoaded){
         const unsub = onSnapshot(doc(firestore, USERS, userData.uid), (doc)=>{
             setRole(doc.data().type)
-            console.log("roolib" + role)
+            console.log(doc.data().type)
+            console.log("rooli",role)
             
-        },
-        (error)=>{
-            console.log(error)
         })
-      
-        const usersQuery = collection(firestore, USERS);
-            const usersUnsub = onSnapshot(usersQuery, (querySnapshot) => {
-                const tempUsersData = [];
-                querySnapshot.forEach((doc) => {
-                    const tempUserData = {
-                        id: doc.id,
-                        email: doc.data().email,
-                        name: doc.data().name,
-                    };
-                    tempUsersData.push(tempUserData);
-                });
-                setUsersData(tempUsersData);
-                console.log("käyttäjädata",usersData)
-                setUsersDataLoaded(true)
-                console.log("onko ladattu",usersDataLoaded)
-            });
-            return () => {
-                unsub()
-                usersUnsub();
-                
-                
-            };
         }
 
-}, [ userDataLoaded])
+}, [userData, userDataLoaded])
 
-//tämä seuraava asia on kesken eikä toimi
-/*useEffect(()=>{
-    if (usersDataLoaded){
-        const q = query(collection(firestore, USERS, usersData.id, "ilmoitukset"))
+
+
+/*if(role === "Auto"){
+setCars(true)
+}
+else if(role === "Omaisuus"){
+    setProperty(true)
+}
+else{
+    setOther(true)
+}*/
+useEffect(()=>{
+    if (userDataLoaded){
+        const q = query(collection(firestore, USERS))
     
         const unsubscribe = onSnapshot(q,(querySnapshot)=>{
             const tempSent = []
@@ -124,7 +108,8 @@ useEffect(() => {
   
     const fetchData = async () => {
       const promises = sent.map(async (user) => {
-        const ilmoitusQuery = query(collection(firestore, USERS, user.id, "ilmoitukset"), orderBy('created', 'desc'));
+        const ilmoitusRef = collection(firestore, USERS, user.id, "ilmoitukset")
+        const ilmoitusQuery = query(ilmoitusRef, where("typeTitle", "==", "Autot"), orderBy('created', 'desc'));
         const ilmoitusSnapshot = await getDocs(ilmoitusQuery);
 
         ilmoitusSnapshot.forEach((doc) => {
@@ -139,6 +124,7 @@ useEffect(() => {
             picture: doc.data().picture,
             sender: user.title,
             email: user.description,
+            type: doc.data().typeTitle
           };
           tempIlmoitukset.push(ilmoitusObject);
         });
@@ -185,32 +171,6 @@ useEffect(() => {
         />
         </View>
     ) }
-
-/* return(
-    <Screen>
-        <Text>Olet meklari.</Text>
-    <FlatList 
-    data={sent}
-    keyExtractor={message => message.id.toString()}
-    renderItem={({item}) => 
-    <ListItem
-    title={item.title}
-    subTitle={item.description}
-    sended={item.created}
-    state={item.state}
-    IconComponent={
-        <Icon 
-        name= "email"
-        backgroundColor="gray"
-        />
-    }
-    onPress={() => navigation.navigate("listingdetails", item)}
-    />
-    }
-    ItemSeparatorComponent={ListItemSeparator}
-    />
-    </Screen>
-) */
 }
 
 const styles = StyleSheet.create({

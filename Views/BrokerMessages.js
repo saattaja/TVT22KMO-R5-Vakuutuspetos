@@ -145,7 +145,7 @@ useEffect(() => {
     return <Screen><Text>Loading..</Text></Screen>}
     else{
   return (
-    <Screen>
+    <View style={styles.container}>
     <FlatList 
     data={ilmoitukset}
     keyExtractor={message => message.id.toString()}
@@ -172,7 +172,7 @@ useEffect(() => {
     onRefresh={() => } */
     />
 <Modal visible={modalVisible} animationType='slide'>
-    <Screen>
+    <Screen style={styles.container}>
     <Button title="sulje" onPress={() => setModalVisible(false)}/>
     <Card 
     title={selectedMessage.title}
@@ -185,7 +185,7 @@ useEffect(() => {
     <AnswerCard customer={selectedMessage.userId} viesti={selectedMessage.id}/>
     </Screen>
 </Modal>
-    </Screen>
+    </View>
     ) }
 
 /* return(
@@ -217,9 +217,8 @@ useEffect(() => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        padding: 10,
-        paddingBottom: 10
+        paddingBottom: 10,
+        padding: 10
       
     },
     clickable:{

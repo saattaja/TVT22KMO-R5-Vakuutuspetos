@@ -40,7 +40,7 @@ function BrokerListingDetailsScreen({ route, navigation }) {
   }
 
   return (
-    <View>
+    <View style={styles.bottom}>
       {imageUrl ? (
         <Image style={styles.image} source={{ uri: imageUrl }} />
       ) : (
@@ -62,7 +62,11 @@ function BrokerListingDetailsScreen({ route, navigation }) {
 
 const styles = StyleSheet.create({
   detailsContainer: {
-    padding: 20
+    padding: 20,
+    
+  },
+  bottom:{
+    paddingBottom: 10
   },
   title: {
     fontSize: 24,

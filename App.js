@@ -51,7 +51,7 @@ export default function App() {
         <NavigationContainer>
         <Tab.Navigator initialRouteName='Käsittelijä'
           screenOptions={{
-            tabBarActiveTintColor: 'palevioletred',
+            tabBarActiveTintColor: 'salmon',
             tabBarHideOnKeyboard: true
           }}>
           <Tab.Screen
@@ -125,7 +125,7 @@ export default function App() {
                     headerTitle: 'Lähetä viesti',
                     headerTitleStyle: { color: 'white' },
                     tabBarIcon: ({color,size})=>(
-                      <AntDesign name="mail" size={size} color="steelblue"></AntDesign>
+                      <AntDesign name="message1" size={size} color="steelblue"></AntDesign>
                     )
                 }}></Tab.Screen>
               </Tab.Navigator>
