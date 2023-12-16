@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Image, View, StyleSheet, Text, Button } from 'react-native';
 import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 import { USERS, collection, firestore, doc, updateDoc, getDoc } from "../Firebase/Config";
+import Screen from '../components/Screen';
 
 
 function BrokerListingDetailsScreen({ route, navigation }) {
@@ -40,7 +41,7 @@ function BrokerListingDetailsScreen({ route, navigation }) {
   }
 
   return (
-    <View style={styles.bottom}>
+    <Screen>
       {imageUrl ? (
         <Image style={styles.image} source={{ uri: imageUrl }} />
       ) : (
@@ -56,13 +57,14 @@ function BrokerListingDetailsScreen({ route, navigation }) {
         <Button title="Vaihda tilaksi: käsittelyssä" onPress={() => updateListingStatus('Käsittelyssä')}/>
         <Button title="Vaihda tilaksi: ratkaistu" onPress={() => updateListingStatus('Ratkaistu')}/>
       </View>
-    </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   detailsContainer: {
     padding: 20,
+    paddingBottom: 40
     
   },
   bottom:{

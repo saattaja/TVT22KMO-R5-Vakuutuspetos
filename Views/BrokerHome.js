@@ -51,26 +51,24 @@ useEffect(() => {
 useEffect(()=>{
     if (userDataLoaded){
         const unsub = onSnapshot(doc(firestore, USERS, userData.uid), (doc)=>{
-            setRole(doc.data().type)
-            console.log(doc.data().type)
-            console.log("rooli",role)
+            if(doc.data().type === "Auto"){
+                setRole("Autot")
+            }
+            else if(doc.data().type === "Koti ja irtaimisto"){
+                setRole("Koti ja irtaimisto")
+            }
+            else{
+                setRole("Muu omaisuus")
+            }
             
         })
+        console.log("rooli nyt" + role)
         }
+        
 
 }, [userData, userDataLoaded])
 
 
-
-/*if(role === "Auto"){
-setCars(true)
-}
-else if(role === "Omaisuus"){
-    setProperty(true)
-}
-else{
-    setOther(true)
-}*/
 useEffect(()=>{
     if (userDataLoaded){
         const q = query(collection(firestore, USERS))
@@ -109,7 +107,7 @@ useEffect(() => {
     const fetchData = async () => {
       const promises = sent.map(async (user) => {
         const ilmoitusRef = collection(firestore, USERS, user.id, "ilmoitukset")
-        const ilmoitusQuery = query(ilmoitusRef, where("typeTitle", "==", "Autot"), orderBy('created', 'desc'));
+        const ilmoitusQuery = query(ilmoitusRef, where("typeTitle", "==", role), orderBy('created', 'desc'));
         const ilmoitusSnapshot = await getDocs(ilmoitusQuery);
 
         ilmoitusSnapshot.forEach((doc) => {
