@@ -155,11 +155,11 @@ export default function App() {
             title: 'Lomake',
             headerTitle: 'Lähetä vahinkoilmoitus',
             headerTitleStyle: { color: 'white' },
+            headerStyle:{
+              backgroundColor: 'steelblue'
+            },
             tabBarIcon: ({color,size})=>(
             <AntDesign name="plus" size={size} color="steelblue"></AntDesign>
-            ),
-            headerRight: ()=> (
-              <Pressable title="empty" style={styles.empty}></Pressable>
             )
           }}></Tab.Screen>
           <Tab.Screen

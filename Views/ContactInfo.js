@@ -1,5 +1,5 @@
-import React, {useLayoutEffect, useState} from "react";
-import { StyleSheet, Alert, ActivityIndicator, Pressable, Text} from "react-native";
+import React, {useLayoutEffect, useState, useEffect} from "react";
+import { StyleSheet, Alert, ActivityIndicator, Pressable, Text, View, LogBox} from "react-native";
 import {
     AppForm as Form,
     AppFormField as FormField,
@@ -34,20 +34,14 @@ export default function Contact({navigation}){
         navigation.setOptions({
             headerStyle:{
                 backgroundColor: 'steelblue'
-            },
-            headerRight: () => ( //TÄMÄ ASIA KESKEN
-              <Pressable
-              type="reset"
-              onPress={()=> resetHandler()}
-              title= "Tyhjennä"
-              color="#ffffff">
-                <Text style={styles.empty}>Tyhjennä</Text>
-              </Pressable>
-            )
+            }
             
         })
     }, [])
 
+    useEffect(() => {
+      LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+  }, [])
 
     const sendMessage = async (message, { resetForm } ) => {
       try {
@@ -88,7 +82,7 @@ export default function Contact({navigation}){
       resetForm();
     };
     return(
-        <Screen style={styles.container}>
+        <View style={styles.container}>
         {/* määritellään aloitusarvot */}
         <Form
           initialValues={{
@@ -112,16 +106,11 @@ export default function Contact({navigation}){
           <SubmitButton title="Lähetä viesti" color="#96bf44"/>
           {isLoading && <ActivityIndicator size="large" color="steelblue" />}
         </Form>
-      </Screen>
+      </View>
     )
 }
 const styles = StyleSheet.create({
     container: {
       padding: 10,
-    },
-    empty:{
-      color: "#ffffff",
-      width: 70,
-      fontFamily: Platform.OS === 'android' ? 'Roboto' : 'Avenir',
     },
   });

@@ -14,7 +14,12 @@ const FeedNavigator = () => (
 
         }}/>
         <Stack.Screen name="listingdetails" component={ListingDetailsScreen}   options={{
-          headerTitle: 'Lähetetty lomake'
+          headerTitle: 'Lähetetty lomake',
+          headerTitleStyle:{ color: 'white'},
+          headerStyle:{
+            backgroundColor: 'steelblue'
+          },
+          headerTintColor: 'white'
         }}/>
     </Stack.Navigator>
 )

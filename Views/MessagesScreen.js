@@ -10,7 +10,15 @@ import Icon from '../components/Icon';
 import Card from '../components/Card';
 
 
-function MessagesScreen(props) {
+function MessagesScreen({navigation}) {
+    useLayoutEffect(()=>{
+        navigation.setOptions({
+            headerStyle:{
+                backgroundColor: 'steelblue'
+            }
+            
+        })
+    }, [])
 
     const [sent, setSent]= useState([])
     const [userData, setUserData] = useState(null);
@@ -34,6 +42,7 @@ function MessagesScreen(props) {
         };
         fetchData();
     }, []);
+    
     
     
     useEffect(()=>{
@@ -74,7 +83,7 @@ function MessagesScreen(props) {
         return <Screen><Text>Loading..</Text></Screen>}
         else{
     return (
-       <Screen>
+       <View style={styles.container}>
             <FlatList 
             data={sent}
             keyExtractor={message => message.id.toString()}
@@ -112,13 +121,15 @@ function MessagesScreen(props) {
             />
             </Screen>
         </Modal>
-            </Screen>
+            </View>
             
     ); }
 }
 
 const styles = StyleSheet.create({
-   
+   container:{
+    padding: 10
+   }
 })
 
 export default MessagesScreen;
