@@ -1,6 +1,6 @@
 import React from "react";
 import { useLayoutEffect, useState, useEffect } from "react";
-import { Text, FlatList, StyleSheet, View } from "react-native";
+import { Text, FlatList, StyleSheet, View, Modal, Button } from "react-native";
 import {collection, doc, USERS, where, firestore, query, getDocs, onSnapshot, orderBy} from '../Firebase/Config'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Screen from "../components/Screen";
@@ -8,8 +8,10 @@ import ListItem from "../components/ListItem";
 import ListItemSeparator from "../components/ListItemSeparator";
 import { convertFirebaseTimeStampToJS } from "../Helpers/Timestamp";
 import Icon from "../components/Icon";
+import Card from "../components/Card";
+import AnswerCard from "../components/AnswerCard";
 
-export default function BrokerHome({navigation}){
+export default function BrokerMessages({navigation}){
     useLayoutEffect(()=>{
         navigation.setOptions({
             headerStyle:{
@@ -30,6 +32,8 @@ const [sent, setSent]= useState([])
 const [ilmoitukset, setIlmoitukset]= useState([])
 const [ilmoituksetLoated, setIlmoituksetLoated] = useState(false);
 const [refreshing, setRefreshing] = useState(false)
+const [modalVisible, setModalVisible] = useState(false) 
+const [selectedMessage, setSelectedMessage] = useState('') 
 
 
 useEffect(() => {
@@ -39,7 +43,6 @@ useEffect(() => {
           const parsedUser = JSON.parse(jsonValue);
           setUserData(parsedUser);
           setUserDataLoaded(true); // Mark user data as loaded
-          console.log("userdataloaded" + userDataLoaded)
       } catch (error) {
         console.log("Error in homescreen AsyncStorage read: " + error);
       }
@@ -48,27 +51,30 @@ useEffect(() => {
 }, []);
 
 
+
 useEffect(()=>{
     if (userDataLoaded){
         const unsub = onSnapshot(doc(firestore, USERS, userData.uid), (doc)=>{
-            if(doc.data().type === "Auto"){
-                setRole("Autot")
-            }
-            else if(doc.data().type === "Koti ja irtaimisto"){
-                setRole("Koti ja irtaimisto")
-            }
-            else{
-                setRole("Muu omaisuus")
-            }
+            setRole(doc.data().type)
+            console.log(doc.data().type)
+            console.log("rooli",role)
             
         })
-        console.log("rooli nyt" + role)
         }
-        
 
 }, [userData, userDataLoaded])
 
 
+
+/*if(role === "Auto"){
+setCars(true)
+}
+else if(role === "Omaisuus"){
+    setProperty(true)
+}
+else{
+    setOther(true)
+}*/
 useEffect(()=>{
     if (userDataLoaded){
         const q = query(collection(firestore, USERS))
@@ -106,8 +112,7 @@ useEffect(() => {
   
     const fetchData = async () => {
       const promises = sent.map(async (user) => {
-        const ilmoitusRef = collection(firestore, USERS, user.id, "ilmoitukset")
-        const ilmoitusQuery = query(ilmoitusRef, where("typeTitle", "==", role), orderBy('created', 'desc'));
+        const ilmoitusQuery = query(collection(firestore, USERS, user.id, "viestit"), orderBy('created', 'desc'));
         const ilmoitusSnapshot = await getDocs(ilmoitusQuery);
 
         ilmoitusSnapshot.forEach((doc) => {
@@ -115,14 +120,11 @@ useEffect(() => {
             userId: user.id,
             id: doc.id,
             created: convertFirebaseTimeStampToJS(doc.data().created),
-            state: doc.data().tila,
             title: doc.data().title,
-            price: doc.data().damageValue,
-            description: doc.data().description,
-            picture: doc.data().picture,
+            message: doc.data().message,
+            typeTitle: doc.data().typeTitle,
             sender: user.title,
             email: user.description,
-            type: doc.data().typeTitle
           };
           tempIlmoitukset.push(ilmoitusObject);
         });
@@ -143,39 +145,80 @@ useEffect(() => {
     return <Screen><Text>Loading..</Text></Screen>}
     else{
   return (
-        <View style={styles.container}>
-        <Text style={styles.text}>Asiakkaiden lähettämät ilmoitukset sekä niiden tilat.</Text>
-        <FlatList 
-        data={ilmoitukset}
-        keyExtractor={message => message.id.toString()}
-        renderItem={({item}) => 
-        <ListItem
-        title={item.title}
-        subTitle={item.description}
-        sended={item.created}
-        state={item.state}
-        IconComponent={
-            <Icon 
-            name= "email"
-            backgroundColor="gray"
-            />
-        }
-        onPress={() => navigation.navigate("listingdetails", item)}
+    <View style={styles.container}>
+    <FlatList 
+    data={ilmoitukset}
+    keyExtractor={message => message.id.toString()}
+    renderItem={({item}) => 
+    <ListItem
+    title={item.title}
+    subTitle={item.message}
+    sended={item.created}
+    type={item.typeTitle}
+    IconComponent={
+        <Icon 
+        name= "email"
+        backgroundColor="gray"
         />
-        }
-        ItemSeparatorComponent={ListItemSeparator}
-        refreshing={refreshing}
-        onRefresh={() => getIlmoitukset()}
-        />
-        </View>
+    }
+    onPress={() => {
+        setModalVisible(true)
+        setSelectedMessage(item)
+    }}
+    />
+    }
+    ItemSeparatorComponent={ListItemSeparator}
+  /*   refreshing={refreshing}
+    onRefresh={() => } */
+    />
+<Modal visible={modalVisible} animationType='slide'>
+    <Screen style={styles.container}>
+    <Button title="sulje" onPress={() => setModalVisible(false)}/>
+    <Card 
+    title={selectedMessage.title}
+    message={selectedMessage.message} 
+    typeTitle={selectedMessage.typeTitle}
+    created={selectedMessage.created}
+    sender={selectedMessage.sender}
+    email={selectedMessage.email}
+    />
+    <AnswerCard customer={selectedMessage.userId} viesti={selectedMessage.id}/>
+    </Screen>
+</Modal>
+    </View>
     ) }
+
+/* return(
+    <Screen>
+        <Text>Olet meklari.</Text>
+    <FlatList 
+    data={sent}
+    keyExtractor={message => message.id.toString()}
+    renderItem={({item}) => 
+    <ListItem
+    title={item.title}
+    subTitle={item.description}
+    sended={item.created}
+    state={item.state}
+    IconComponent={
+        <Icon 
+        name= "email"
+        backgroundColor="gray"
+        />
+    }
+    onPress={() => navigation.navigate("listingdetails", item)}
+    />
+    }
+    ItemSeparatorComponent={ListItemSeparator}
+    />
+    </Screen>
+) */
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        padding: 10,
-        paddingBottom: 10
+        paddingBottom: 10,
+        padding: 10
       
     },
     clickable:{

@@ -139,6 +139,17 @@ export default function Account({navigation}){
             />
             <ListItemSeparator></ListItemSeparator>
             <AccountInfoItem
+            title="Viestit"
+            IconComponent={
+                <Icon 
+                name= "email"
+                backgroundColor="gray"
+                />
+            }
+            onPress={() => navigation.navigate("messages")}
+            />
+            <ListItemSeparator></ListItemSeparator>
+            <AccountInfoItem
             title="Kirjaudu ulos"
             IconComponent={
                 <Icon 

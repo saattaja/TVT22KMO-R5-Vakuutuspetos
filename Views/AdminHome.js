@@ -51,6 +51,7 @@ export default function AdminHome({ navigation }) {
           const parsedUser = JSON.parse(jsonValue);
           setUserData(parsedUser);
           setUserDataLoaded(true);
+          
         } catch (error) {
           console.log("Error in homescreen AsyncStorage read: " + error);
         }

@@ -4,6 +4,7 @@ import AccountInfo from '../Views/AccountInfo';
 import Account from '../Views/Account';
 import ChangePassword from '../Views/ChangePassword';
 import LoginScreen from '../Views/LoginScreen';
+import MessagesScreen from '../Views/MessagesScreen';
 
 
 const Stack = createStackNavigator();
@@ -21,6 +22,11 @@ const AccInfoNavigation = () => (
         }}/>
         <Stack.Screen name="changepassword" component={ChangePassword}   options={{
           headerTitle: 'Vaihda salasana',
+          headerTitleStyle: { color: 'white' },
+          headerTintColor: 'steelblue'
+        }}/>
+        <Stack.Screen name="messages" component={MessagesScreen}   options={{
+          headerTitle: 'Viestit',
           headerTitleStyle: { color: 'white' },
           headerTintColor: 'steelblue'
         }}/>

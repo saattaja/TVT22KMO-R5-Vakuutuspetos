@@ -20,6 +20,9 @@ import AuthContext from './Helpers/AuthContext';
 import FeedNavigator from './navigation/FeedNavigation';
 import AccInfoNavigation from './navigation/AccInfoNavigation';
 import BrokerNavigator from './navigation/BrokerHomeNavigation';
+import MessagesScreen from './Views/MessagesScreen';
+import BrokerMessages from './Views/BrokerMessages';
+
 
 export default function App() {
   const Tab = createBottomTabNavigator();
@@ -48,7 +51,7 @@ export default function App() {
         <NavigationContainer>
         <Tab.Navigator initialRouteName='Käsittelijä'
           screenOptions={{
-            tabBarActiveTintColor: 'palevioletred',
+            tabBarActiveTintColor: 'salmon',
             tabBarHideOnKeyboard: true
           }}>
           <Tab.Screen
@@ -93,17 +96,14 @@ export default function App() {
                 }}
               ></Tab.Screen>
               <Tab.Screen
-                name="lomake"
-                component={Lomake}
+                name="messages"
+                component={BrokerMessages}
                 options={{
-                  title: 'Lomake',
-                  headerTitle: 'Lähetä vahinkoilmoitus',
+                  title: 'Viestit',
+                  headerTitle: 'Käyttäjien viestit',
                   headerTitleStyle: { color: 'white' },
                   tabBarIcon: ({color,size})=>(
-                    <AntDesign name="plus" size={size} color="steelblue"></AntDesign>
-                  ),
-                  headerRight: ()=> (
-                    <Pressable title="empty" style={styles.empty}></Pressable>
+                    <AntDesign name="mail" size={size} color="steelblue"></AntDesign>
                   )
                 }}></Tab.Screen>
                 <Tab.Screen
@@ -125,7 +125,7 @@ export default function App() {
                     headerTitle: 'Lähetä viesti',
                     headerTitleStyle: { color: 'white' },
                     tabBarIcon: ({color,size})=>(
-                      <AntDesign name="mail" size={size} color="steelblue"></AntDesign>
+                      <AntDesign name="message1" size={size} color="steelblue"></AntDesign>
                     )
                 }}></Tab.Screen>
               </Tab.Navigator>
