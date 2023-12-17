@@ -82,7 +82,7 @@ export default function Contact({navigation}){
       resetForm();
     };
     return(
-        <View style={styles.container}>
+        <Screen>
         {/* määritellään aloitusarvot */}
         <Form
           initialValues={{
@@ -106,7 +106,7 @@ export default function Contact({navigation}){
           <SubmitButton title="Lähetä viesti" color="#96bf44"/>
           {isLoading && <ActivityIndicator size="large" color="steelblue" />}
         </Form>
-      </View>
+      </Screen>
     )
 }
 const styles = StyleSheet.create({
