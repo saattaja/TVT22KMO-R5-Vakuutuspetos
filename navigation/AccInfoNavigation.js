@@ -23,12 +23,15 @@ const AccInfoNavigation = () => (
         <Stack.Screen name="changepassword" component={ChangePassword}   options={{
           headerTitle: 'Vaihda salasana',
           headerTitleStyle: { color: 'white' },
-          headerTintColor: 'steelblue'
+          headerTintColor: 'white',
+          headerStyle:{
+            backgroundColor: 'steelblue'
+          }
         }}/>
         <Stack.Screen name="messages" component={MessagesScreen}   options={{
           headerTitle: 'Viestit',
           headerTitleStyle: { color: 'white' },
-          headerTintColor: 'steelblue'
+          headerTintColor: 'white'
         }}/>
     </Stack.Navigator>
 )

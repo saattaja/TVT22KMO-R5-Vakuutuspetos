@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { Image, View, StyleSheet, Text } from 'react-native';
 import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 
 
-function ListingDetailsScreen({ route } ) {
-
+function ListingDetailsScreen({ route }) {
+  
 const listing = route.params;
 const [imageUrl, setImageUrl]= useState();
 const storage = getStorage();
@@ -22,7 +22,7 @@ if (filePath) {
     });
 }
     return (
-        <View>
+        <Screen>
 {imageUrl ? (
    <Image style={styles.image} source={{uri: imageUrl}}/>
 ) : (
@@ -34,7 +34,7 @@ if (filePath) {
  <Text style={styles.price}>{"Korvaus pyyntö: " + listing.price + "€"}</Text>
  <Text style={styles.price}>{"Tila: " + listing.state}</Text>
  </View>
-        </View>
+        </Screen>
     );
 }
 

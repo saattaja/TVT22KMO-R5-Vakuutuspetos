@@ -1,5 +1,5 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
-import { Button, StyleSheet, Image, Alert, ActivityIndicator, Pressable, Text } from "react-native";
+import React, { useLayoutEffect, useRef, useState, useEffect } from "react";
+import { Button, StyleSheet, Image, Alert, ActivityIndicator, Pressable, Text, View, LogBox } from "react-native";
 import * as Yup from "yup";
 
 
@@ -38,7 +38,9 @@ export default function Lomake({navigation}){
   const [senderName, setSenderName] = useState("")
   const formRef = useRef();
 
-
+  useEffect(() => {
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+}, [])
 
     const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -57,16 +59,7 @@ export default function Lomake({navigation}){
         navigation.setOptions({
             headerStyle:{
                 backgroundColor: 'steelblue',
-            },
-            headerRight: () => ( //TÄMÄ ASIA KESKEN
-              <Pressable
-              type="reset"
-              onPress={()=> resetForm()}
-              title= "Tyhjennä"
-              color="#ffffff">
-                <Text style={styles.empty}>Tyhjennä</Text>
-              </Pressable>
-            ),
+            }
             
         })
     }, [])
@@ -167,7 +160,7 @@ export default function Lomake({navigation}){
     } 
     return (
 
-        <Screen>
+        <View style={styles.container}>
           {/* määritellään aloitusarvot */}
           <Form
             enableReinitialize
@@ -181,6 +174,7 @@ export default function Lomake({navigation}){
             onSubmit={addReport}
             validationSchema={validationSchema}
           >
+            
             <FormField maxLength={255} name="title" placeholder="Otsikko" />
             <Picker items={categories} name="category" placeholder="Valitse kategoria" />
             <FormField
@@ -202,7 +196,7 @@ export default function Lomake({navigation}){
             <SubmitButton title="Lähetä" color="#96bf44"/>
             {isLoading && <ActivityIndicator size="large" color="steelblue" />}
           </Form>
-        </Screen>
+        </View>
       );
     }
 
@@ -211,8 +205,19 @@ const styles = StyleSheet.create({
       padding: 10,
     },
     empty:{
-      color: "#ffffff",
-      width: 70,
+      backgroundColor: '#c54840',
+        borderRadius: 25,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 5,
+        width: '50%',
+        marginVertical: 10,
       fontFamily: Platform.OS === 'android' ? 'Roboto' : 'Avenir',
+    },
+    txt:{
+      color: 'white',
+        fontSize: 10,
+        textTransform: 'uppercase',
+        fontWeight: 'bold'
     }
   });
