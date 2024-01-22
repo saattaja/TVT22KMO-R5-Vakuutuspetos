@@ -13,3 +13,5 @@ Tietokantana on käytössä Googlen Firebase Firestore noSQL-tietokanta. Asiakka
 
 ## Oma osuuteni ryhmätyöprojektissa
 Omaa kädenjälkeäni tässä projektissa on muun muassa navigoinnin koodaus, tietokannan alustus, lomakkeen lähetys(tiedon lähettäminen tietokantaan), etusivunäkymä(tiedon hakeminen ja rajaus tietokannasta), viestien lähetys, käyttäjätietojen tarkistaminen, uloskirjautuminen ja kuvan hakeminen tietokannasta näkyviin.
+
+*Janita Kaikkonen*
