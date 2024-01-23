@@ -6,7 +6,7 @@ Tämä projekti on tehty 4 hengen ryhmätyönä osana IT-insinööriopintoja syk
 <img src="https://github.com/saattaja/TVT22KMO-R5-Vakuutuspetos/assets/113536134/56daea19-e7c6-4077-9d47-53f6c2d73fc3" height="500">
 
 ## Perusidea
-Sovellus on tehty React Nativea käyttäen. Sovellukseen rekisteröidytään ja kirjaudutaan sähköpostilla ja salasanalla. Peruskäyttäjä eli asiakas näkee etusivullaan lähettämänsä vahinkoilmoitukset sekä niiden tilan. Hän voi lähettää vahinkoilmoituksen, lähettää viestin vakuutusmeklarille, tarkastella omia tietoja, vaihtaa salasanan, kirjautua ulos ja poistaa käyttäjätunnuksensa.
+Sovellus on tehty React Nativea käyttäen. Sovellukseen rekisteröidytään ja kirjaudutaan sähköpostilla ja salasanalla. Peruskäyttäjä eli asiakas näkee etusivullaan lähettämänsä vahinkoilmoitukset sekä niiden tilan. Hän voi lähettää vahinkoilmoituksen, lähettää viestin vakuutusmeklarille, tarkastella omia tietoja, vaihtaa salasanan, kirjautua ulos ja poistaa käyttäjätunnuksensa. Vakuutusmeklari näkee omassa etusivunäkymässään hänen vastuualueensa avoimet vahinkoilmoitukset ja voi muuttaa niiden tilaa. Admin-näkymässä etusivulla on kaikki rekisteröityneet käyttäjät ja admin voi vaihtaa jokaiselle käyttäjälle roolin (peruskäyttäjä tai meklarien vastuualueet).
 
 ## Tietokanta ja autentikointi
 Tietokantana on käytössä Googlen Firebase Firestore noSQL-tietokanta. Asiakkaiden tiedot, viestit sekä vahinkoilmoitukset tallennetaan ja niitä luetaan tietokannasta. Firebasen Cloud Storageen tallennettiin lomakkeen mukana laitettu kuva. Firebasen Authenticationia hyödynnettiin rekisteröitymiseen.
